@@ -6,3 +6,4 @@ project/*/grid_movies
 project/*/trajectory_plots
 project/*/results
 project/*/checkpoint.h5
+project/*/results.h5
