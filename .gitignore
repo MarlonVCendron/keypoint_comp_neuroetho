@@ -5,3 +5,5 @@ DLC
 grid_movies
 trajectory_plots
 results
+
+checkpoint.h5
