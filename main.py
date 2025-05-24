@@ -1,47 +1,57 @@
-import keypoint_moseq as kpms
-from jax_moseq.utils import set_mixed_map_iters
-set_mixed_map_iters(8)
+# Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
 
-project_dir = "project"
-config = lambda: kpms.load_config(project_dir)
-
-coordinates, confidences, bodyparts = kpms.load_keypoints(
-    config()['video_dir'],
-    "deeplabcut",
-    extension=".csv",
-)
-
-data, metadata = kpms.format_data(coordinates, confidences, **config())
-
-pca = kpms.load_pca(project_dir)
-
-model = kpms.init_model(data, pca=pca, **config())
-
-fit_ar_only = False
-num_ar_iters = 50
-
-if fit_ar_only:
-    model, model_name = kpms.fit_model(
-        model, data, metadata, project_dir, ar_only=True, num_iters=num_ar_iters
-    )
-else:
-    model_name = '2025_05_10-14_06_30'
-    # load model checkpoint
-    model, data, metadata, current_iter = kpms.load_checkpoint(
-        project_dir, model_name, iteration=num_ar_iters
-    )
-
-# modify kappa to maintain the desired syllable time-scale
-model = kpms.update_hypparams(model, kappa=1e4)
-
-# run fitting for an additional 500 iters
-model = kpms.fit_model(
-    model,
-    data,
-    metadata,
+from utils.args import (
     project_dir,
+    mixed_map_iters,
     model_name,
-    ar_only=False,
-    start_iter=current_iter,
-    num_iters=current_iter + 500,
-)[0]
+    num_ar_iters,
+    command,
+    parser,
+    num_ar_iters_checkpoint,
+    iters,
+    kappa,
+    base_iters,
+    kappa_values,
+)
+from commands import init_project, fit_pca, fit_ar, fit_arhmm, kappa_scan, noise_calibration
+from jax_moseq.utils import set_mixed_map_iters
+
+set_mixed_map_iters(mixed_map_iters)
+
+
+def main():
+    config_overrides = {}
+
+    if command == "init":
+        init_project(project_dir)
+    elif command == "noise_calibration":
+        noise_calibration(project_dir)
+    elif command == "fit_pca":
+        fit_pca(project_dir, config_overrides=config_overrides)
+    elif command == "fit_ar":
+        fit_ar(project_dir, model_name, num_ar_iters, config_overrides=config_overrides)
+    elif command == "fit_arhmm":
+        fit_arhmm(
+            project_dir,
+            model_name,
+            num_ar_iters_checkpoint,
+            iters,
+            kappa_val=kappa,
+            config_overrides=config_overrides,
+        )
+    elif command == "kappa_scan":
+        kappa_scan(
+            project_dir,
+            model_name,
+            num_ar_iters_checkpoint,
+            base_iters,
+            kappa_values,
+            config_overrides=config_overrides,
+        )
+    else:
+        print(f"Comando desconhecido: {command}")
+        parser.print_help()
+
+
+if __name__ == "__main__":
+    main()
