@@ -25,8 +25,6 @@ def main():
 
     if command == "init":
         init_project(project_dir)
-    elif command == "noise_calibration":
-        noise_calibration(project_dir)
     elif command == "fit_pca":
         fit_pca(project_dir, config_overrides=config_overrides)
     elif command == "fit_ar":

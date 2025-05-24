@@ -28,9 +28,6 @@ def build_parser():
     # Subparser para inicializar o projeto
     parser_init = subparsers.add_parser("init", help="Inicializa o projeto.")
     
-    # Subparser para calibração de ruído
-    parser_noise = subparsers.add_parser("noise_calibration", help="Calibra o ruído do modelo.")
-    
     # Subparser para ajustar PCA
     parser_pca = subparsers.add_parser("fit_pca", help="Ajusta e salva PCA.")
     
