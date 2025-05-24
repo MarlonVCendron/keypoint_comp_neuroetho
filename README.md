@@ -39,6 +39,8 @@ arquivo `config.yml` com as configurações necessárias, principalmente:
 
 ##### Calibração de ruído
 
+É necessário calibrar o ruído dos dados do DeepLabCut através do notebook `noise_calibration.ipynb`.
+
 ##### Ajustar PCA
 
 ##### Scan do kappa
