@@ -1,7 +1,7 @@
 import keypoint_moseq as kpms
 from utils.print_legal import print_legal
-from utils.args import parser_init
-from os import path
+from utils.args import get_subparser
+from os import path, makedirs
 
 
 def init_project(project_dir_path):
@@ -9,10 +9,15 @@ def init_project(project_dir_path):
 
     if not project_dir_path:
         print_legal("Diretório do projeto não informado (--project-dir)", type="error")
-        parser_init.print_help()
+        get_subparser("init").print_help()
         return
 
     kpms.setup_project(project_dir_path)
+
+    # Cria o diretório `data`
+    data_dir_path = path.join(project_dir_path, 'data')
+    makedirs(data_dir_path, exist_ok=True)
+
 
     print_legal(f"Projeto inicializado com sucesso em {project_dir_path}")
     print_legal(
