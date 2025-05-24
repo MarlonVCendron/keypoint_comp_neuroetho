@@ -1,7 +1,7 @@
 __pycache__
 
-project/*/grid_movies
-project/*/trajectory_plots
-project/*/results
-project/*/checkpoint.h5
-project/*/results.h5
+projects/**/grid_movies
+projects/**/trajectory_plots
+projects/**/results
+projects/**/checkpoint.h5
+projects/**/results.h5
