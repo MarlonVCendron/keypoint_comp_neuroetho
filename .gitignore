@@ -1,5 +1,7 @@
 __pycache__
 
+DLC
+
 projects/**/grid_movies
 projects/**/trajectory_plots
 projects/**/results
