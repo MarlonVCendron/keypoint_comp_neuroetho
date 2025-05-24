@@ -1,4 +1,5 @@
 import argparse
+from os import path
 
 # Pré-declarar todos os argumentos com None pra poder importá-los diretamente
 project_dir = None
@@ -19,7 +20,7 @@ parser.add_argument(
     "--project-dir",
     type=str,
     default="project",
-    help="Diretório do projeto (deve conter config.yml).",
+    help="Diretório do projeto.",
 )
 parser.add_argument("--model-name", type=str, default="teste", help="Nome base para o modelo.")
 parser.add_argument(
@@ -33,6 +34,14 @@ subparsers = parser.add_subparsers(
     dest="command",
     required=True,
     help="Ação a ser executada. Use '<comando> -h' para mais ajuda sobre um comando específico.",
+)
+
+# Subparser para inicializar o projeto
+parser_init = subparsers.add_parser("init", help="Inicializa o projeto.")
+parser_init.add_argument(
+    "--project-dir",
+    type=str,
+    help="Diretório do projeto",
 )
 
 # Subparser para ajustar PCA
@@ -97,3 +106,5 @@ parsed_cli_args = parser.parse_args()
 # Expõe os argumentos como variáveis globais para serem importadas diretamente
 for arg_name, arg_value in vars(parsed_cli_args).items():
     globals()[arg_name] = arg_value
+
+project_dir = path.join('projects', project_dir)

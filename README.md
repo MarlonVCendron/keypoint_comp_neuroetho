@@ -1,6 +1,19 @@
-# Neuroetologia Computacional
+# Neuroetologia Computacional 🐀
 
-:)
+## Treinando um modelo
+
+Para treinar um modelo, é preciso trazer os vídeos e os dados processados do DeepLabCut para o diretório do projeto:
+1. Coloque os dados dentro do diretório `DLC/`
+2. basta criar um novo diretório com o nome do projeto dentro de `projects/`.
+
+
+
+
+
+
+
+
+---
 
 #### Conda
 
