@@ -43,9 +43,30 @@ arquivo `config.yml` com as configurações necessárias, principalmente:
 
 ##### Ajustar PCA
 
+Em seguida, ajuste o PCA com o comando:
+
+```sh
+python -m main --project-dir <nome_do_projeto> fit_pca
+```
+
+É preciso ajustar o PCA somente uma vez por projeto, o resultado é salvo no diretório `projects/<nome_do_projeto>/pca.p`. O
+comando também irá printar quanto da variância é explicada pelo número de PCs; recomenda-se usar o número de PCs que explica 90%
+da variância.
+
+Ajuste em `projects/<nome_do_projeto>/config.yml` o parâmetro `latent_dim` com o número de PCs que você escolheu.
+
+
 ##### Scan do kappa
 
 ##### Treinamento do AR
+
+É recomendado inicialmente treinar apenas o modelo AR por algumas iterações utilizando o comando a seguir e o parâmetro
+`--num-ar-iters` para definir o número de iterações. Se não especificado, o valor padrão é 50. Você também pode especificar
+o nome do modelo com o parâmetro `--model-name`.
+
+```sh
+python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> fit_ar --num-ar-iters <número_de_iterações>
+```
 
 ##### Treinamento do AR-HMM
 

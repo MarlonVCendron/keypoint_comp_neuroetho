@@ -1,6 +1,6 @@
 import keypoint_moseq as kpms
-from utils import load_data_and_config, print_legal
-from utils.args import get_args
+from utils.load_data_and_config import load_data_and_config
+from utils.print_legal import print_legal
 from os import path
 
 
@@ -17,7 +17,10 @@ def fit_ar(project_dir_path, model_name_str, num_ar_iters_val, config_overrides=
 
     pca = kpms.load_pca(project_dir_path)
 
-    model = kpms.init_model(data, pca=pca, **init_config_params)
+    model = kpms.init_model(data, pca=pca, **config)
+
+    print_legal(f"Iniciando ajuste do modelo AR com {num_ar_iters_val} iterações.")
+
     model, _ = kpms.fit_model(
         model,
         data,
@@ -27,4 +30,5 @@ def fit_ar(project_dir_path, model_name_str, num_ar_iters_val, config_overrides=
         ar_only=True,
         num_iters=num_ar_iters_val,
     )
+
     print_legal(f"Ajuste do modelo AR completo. Modelo salvo como {model_name_str}.")

@@ -2,21 +2,27 @@ import argparse
 from os import path
 
 parser = None
+DEFAULT_PROJECT_SUBDIR = "projects"
+
+def _append_project_subdir(p_dir_str: str | None) -> str | None:
+    if p_dir_str is None:
+        return None
+    return path.join(DEFAULT_PROJECT_SUBDIR, p_dir_str)
 
 def build_parser():
     global parser
     parser = argparse.ArgumentParser(description="Keypoint MoSeq")
     parser.add_argument(
         "--project-dir",
-        type=str,
-        help="Diretório do projeto.",
+        help="Nome do diretório do projeto.",
+        type=_append_project_subdir,
     )
     parser.add_argument("--model-name", type=str, default="teste", help="Nome base para o modelo.")
     parser.add_argument(
         "--mixed-map-iters",
         type=int,
         default=8,
-        help="Número de batches. Diminui o uso de memória em X vezes, aumenta o tempo de execução em X vezes",
+        help="Número de batches. Diminui o uso de memória, mas aumenta o tempo de execução.",
     )
     
     subparsers = parser.add_subparsers(
@@ -83,7 +89,7 @@ def build_parser():
         required=True,
         help="Lista de valores de kappa separados por vírgula (ex: '1e3,1e4,1e5').",
     )
-    
+
     return parser
 
 def get_args():
