@@ -13,7 +13,7 @@ def kappa_scan(
     num_kappas,
     decrease_kappa_factor,
     num_ar_iters,
-    num_full_iters,
+    num_iters,
     config_overrides=None,
 ):
     kappas = np.logspace(kappa_log_start, kappa_log_end, num_kappas)
@@ -55,7 +55,7 @@ def kappa_scan(
             model_name,
             ar_only=False,
             start_iter=num_ar_iters,
-            num_iters=num_full_iters,
+            num_iters=num_iters + num_ar_iters,
             save_every_n_iters=25,
         )
 

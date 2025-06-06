@@ -102,9 +102,9 @@ def build_parser():
         help="Número de iterações para o ajuste do modelo AR.",
     )
     parser_kappa.add_argument(
-        "--num-full-iters",
+        "--iters",
         type=int,
-        default=200,
+        default=250,
         help="Número de iterações para o ajuste do modelo AR-HMM.",
     )
 

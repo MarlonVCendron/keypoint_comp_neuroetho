@@ -28,30 +28,35 @@ def main():
     set_mixed_map_iters(mixed_map_iters)
 
     if command == "init":
-        init_project(project_dir)
+        init_project(project_dir=project_dir)
     elif command == "fit_pca":
-        fit_pca(project_dir, config_overrides=config_overrides)
+        fit_pca(project_dir=project_dir, config_overrides=config_overrides)
     elif command == "kappa_scan":
         kappa_scan(
-            project_dir,
-            model_name,
-            kappa_log_start,
-            kappa_log_end,
-            num_kappas,
-            decrease_kappa_factor,
-            num_ar_iters,
-            num_full_iters,
+            project_dir=project_dir,
+            model_name=model_name,
+            kappa_log_start=kappa_log_start,
+            kappa_log_end=kappa_log_end,
+            num_kappas=num_kappas,
+            decrease_kappa_factor=decrease_kappa_factor,
+            num_ar_iters=num_ar_iters,
+            num_iters=num_full_iters,
             config_overrides=config_overrides,
         )
     elif command == "fit_ar":
-        fit_ar(project_dir, model_name, num_ar_iters, config_overrides=config_overrides)
+        fit_ar(
+            project_dir=project_dir,
+            model_name=model_name,
+            num_ar_iters=num_ar_iters,
+            config_overrides=config_overrides,
+        )
     elif command == "fit_arhmm":
         fit_arhmm(
-            project_dir,
-            model_name,
-            num_ar_iters_checkpoint,
-            iters,
-            kappa_val=kappa,
+            project_dir=project_dir,
+            model_name=model_name,
+            num_ar_iters_checkpoint=num_ar_iters_checkpoint,
+            iters=iters,
+            kappa=kappa,
             config_overrides=config_overrides,
         )
     else:
