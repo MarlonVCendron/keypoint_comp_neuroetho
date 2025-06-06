@@ -58,6 +58,21 @@ Ajuste em `projects/<nome_do_projeto>/config.yml` o parâmetro `latent_dim` com 
 
 ##### Scan do kappa
 
+O hiperparâmetro `kappa` controla a frequência de transições entre os estados do modelo. Um valor de `kappa` maior resultará em um
+modelo com menos transições e sílabas mais longas. Use o comando `kappa_scan` para treinar vários modelos com diferentes valores
+de `kappa` para ajudar a encontrar o valor ideal:
+
+```sh
+python -m main --project-dir <nome_do_projeto> kappa_scan \
+    --kappa-log-start 3 \
+    --kappa-log-end 7 \
+    --num-kappas 5 \
+    --num-ar-iters 50 \
+    --num-full-iters 200
+```
+
+Este comando irá treinar 5 modelos com `kappa` variando de $10^3$ a $10^7$. Os parâmetros `--num-ar-iters` e `--num-full-iters` controlam o número de iterações para o ajuste dos modelos AR e AR-HMM, respectivamente.
+
 ##### Treinamento do AR
 
 É recomendado inicialmente treinar apenas o modelo AR por algumas iterações utilizando o comando a seguir e o parâmetro
@@ -69,8 +84,6 @@ python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> fit
 ```
 
 ##### Treinamento do AR-HMM
-
-
 
 
 

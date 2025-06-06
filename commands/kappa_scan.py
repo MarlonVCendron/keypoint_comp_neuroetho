@@ -8,12 +8,12 @@ from utils.load_data_and_config import load_data_and_config
 def kappa_scan(
     project_dir,
     model_name,
-    kappa_log_start = 3,
-    kappa_log_end = 7,
-    num_kappas = 5,
-    decrease_kappa_factor = 10,
-    num_ar_iters = 50,
-    num_full_iters = 200,
+    kappa_log_start,
+    kappa_log_end,
+    num_kappas,
+    decrease_kappa_factor,
+    num_ar_iters,
+    num_full_iters,
     config_overrides=None,
 ):
     kappas = np.logspace(kappa_log_start, kappa_log_end, num_kappas)
