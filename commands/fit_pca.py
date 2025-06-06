@@ -1,4 +1,4 @@
-import keypoint_moseq as kpms
+import keypoint_moseq as kpms # type: ignore
 from utils.load_data_and_config import load_data_and_config
 from utils.print_legal import print_legal
 from os import path

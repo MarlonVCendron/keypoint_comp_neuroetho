@@ -1,4 +1,4 @@
-import keypoint_moseq as kpms
+import keypoint_moseq as kpms # type: ignore
 from jax_moseq.utils import set_mixed_map_iters
 from utils.args import project_dir, model_name, mixed_map_iters
 

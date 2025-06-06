@@ -1,6 +1,6 @@
 # Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
 
-import keypoint_moseq as kpms
+import keypoint_moseq as kpms # type: ignore
 from jax_moseq.utils import set_mixed_map_iters
 from utils.args import project_dir, mixed_map_iters, fit_ar_only, model_name, num_ar_iters
 
