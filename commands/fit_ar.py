@@ -4,31 +4,31 @@ from utils.print_legal import print_legal
 from os import path
 
 
-def fit_ar(project_dir_path, model_name_str, num_ar_iters_val, config_overrides=None):
+def fit_ar(project_dir, model_name, num_ar_iters, config_overrides=None):
     """Ajusta o modelo AR inicial."""
 
     print_legal(
-        f"Ajustando o modelo AR para o projeto: {project_dir_path}, nome do modelo: {model_name_str}, iterações: {num_ar_iters_val}"
+        f"Ajustando o modelo AR para o projeto: {project_dir}, nome do modelo: {model_name}, iterações: {num_ar_iters}"
     )
 
-    data, metadata, config = load_data_and_config(project_dir_path)
+    data, metadata, config = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 
-    pca = kpms.load_pca(project_dir_path)
+    pca = kpms.load_pca(project_dir)
 
     model = kpms.init_model(data, pca=pca, **config)
 
-    print_legal(f"Iniciando ajuste do modelo AR com {num_ar_iters_val} iterações.")
+    print_legal(f"Iniciando ajuste do modelo AR com {num_ar_iters} iterações.")
 
     model, _ = kpms.fit_model(
         model,
         data,
         metadata,
-        project_dir_path,
-        model_name_str,
+        project_dir,
+        model_name,
         ar_only=True,
-        num_iters=num_ar_iters_val,
+        num_iters=num_ar_iters,
     )
 
-    print_legal(f"Ajuste do modelo AR completo. Modelo salvo como {model_name_str}.")
+    print_legal(f"Ajuste do modelo AR completo. Modelo salvo como {model_name}.")

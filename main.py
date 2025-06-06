@@ -27,6 +27,13 @@ def main():
         init_project(project_dir)
     elif command == "fit_pca":
         fit_pca(project_dir, config_overrides=config_overrides)
+    elif command == "kappa_scan":
+        kappa_scan(
+            project_dir,
+            model_name,
+            kappa_values,
+            config_overrides=config_overrides,
+        )
     elif command == "fit_ar":
         fit_ar(project_dir, model_name, num_ar_iters, config_overrides=config_overrides)
     elif command == "fit_arhmm":
@@ -36,15 +43,6 @@ def main():
             num_ar_iters_checkpoint,
             iters,
             kappa_val=kappa,
-            config_overrides=config_overrides,
-        )
-    elif command == "kappa_scan":
-        kappa_scan(
-            project_dir,
-            model_name,
-            num_ar_iters_checkpoint,
-            base_iters,
-            kappa_values,
             config_overrides=config_overrides,
         )
     else:

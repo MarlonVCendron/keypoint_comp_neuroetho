@@ -4,8 +4,8 @@ from os import path
 
 
 def fit_arhmm(
-    project_dir_path,
-    model_name_str,
+    project_dir,
+    model_name,
     num_ar_iters_checkpoint,
     iters,
     kappa_val=None,
@@ -13,17 +13,17 @@ def fit_arhmm(
 ):
     """Ajusta o modelo AR-HMM, carregando de um checkpoint do modelo AR."""
     print_legal(
-        f"Iniciando ajuste do AR-HMM para o projeto: {project_dir_path}, nome do modelo: {model_name_str}"
+        f"Iniciando ajuste do AR-HMM para o projeto: {project_dir}, nome do modelo: {model_name}"
     )
 
-    _, _, config = load_data_and_config(project_dir_path)
+    _, _, config = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 
     # Carrega o modelo a partir do checkpoint do modelo AR
     model, data, metadata, current_iter = kpms.load_checkpoint(
-        project_dir_path,
-        model_name_str,
+        project_dir,
+        model_name,
         iteration=num_ar_iters_checkpoint,  # Especifica a iteração do modelo AR a ser carregada
     )
 
@@ -40,10 +40,10 @@ def fit_arhmm(
         model,
         data,
         metadata,
-        project_dir_path,
-        model_name_str,
+        project_dir,
+        model_name,
         ar_only=False,
         start_iter=current_iter,
         num_iters=current_iter + iters,
     )
-    print_legal(f"Ajuste do AR-HMM completo. Modelo atualizado como {model_name_str}.")
+    print_legal(f"Ajuste do AR-HMM completo. Modelo atualizado como {model_name}.")
