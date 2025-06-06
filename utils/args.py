@@ -69,25 +69,43 @@ def build_parser():
     # Subparser para scan de kappa
     parser_kappa = subparsers.add_parser(
         "kappa_scan",
-        help="Realiza uma scan de kappa: ajusta AR-HMM para múltiplos valores de kappa.",
+        help="Scan de kappa: ajusta AR-HMM para múltiplos valores de kappa.",
     )
     parser_kappa.add_argument(
-        "--num-ar-iters-checkpoint",
+        "--kappa-log-start",
+        type=float,
+        default=3,
+        help="Valor inicial do expoente do kappa. Exemplo: 3 = 10^3 = 1000.",
+    )
+    parser_kappa.add_argument(
+        "--kappa-log-end",
+        type=float,
+        default=7,
+        help="Valor final do expoente do kappa. Exemplo: 7 = 10^7 = 10000000.",
+    )
+    parser_kappa.add_argument(
+        "--num-kappas",
         type=int,
-        required=True,
-        help="Número da iteração do checkpoint do modelo AR a ser carregado para cada scan.",
+        default=5,
+        help="Número de valores de kappa a serem testados. Exemplo: 5 = 1000, 10000, 100000, 1000000, 10000000.",
     )
     parser_kappa.add_argument(
-        "--base-iters",
+        "--decrease-kappa-factor",
+        type=float,
+        default=10,
+        help="Fator pelo qual o kappa é dividido após o ajuste do modelo AR. Por padrão, 10.",
+    )
+    parser_kappa.add_argument(
+        "--num-ar-iters",
+        type=int,
+        default=50,
+        help="Número de iterações para o ajuste do modelo AR.",
+    )
+    parser_kappa.add_argument(
+        "--num-full-iters",
         type=int,
         default=200,
-        help="Número de iterações para cada modelo AR-HMM no scan.",
-    )
-    parser_kappa.add_argument(
-        "--kappa-values",
-        type=str,
-        required=True,
-        help="Lista de valores de kappa separados por vírgula (ex: '1e3,1e4,1e5').",
+        help="Número de iterações para o ajuste do modelo AR-HMM.",
     )
 
     return parser

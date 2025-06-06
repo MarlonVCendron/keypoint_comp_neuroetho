@@ -17,8 +17,12 @@ def main():
     num_ar_iters_checkpoint = get_arg('num_ar_iters_checkpoint')
     iters = get_arg('iters')
     kappa = get_arg('kappa')
-    base_iters = get_arg('base_iters')
-    kappa_values = get_arg('kappa_values')
+    kappa_log_start = get_arg('kappa_log_start')
+    kappa_log_end = get_arg('kappa_log_end')
+    num_kappas = get_arg('num_kappas')
+    decrease_kappa_factor = get_arg('decrease_kappa_factor')
+    num_ar_iters = get_arg('num_ar_iters')
+    num_full_iters = get_arg('num_full_iters')
     mixed_map_iters = get_arg('mixed_map_iters')
 
     set_mixed_map_iters(mixed_map_iters)
@@ -31,7 +35,12 @@ def main():
         kappa_scan(
             project_dir,
             model_name,
-            kappa_values,
+            kappa_log_start,
+            kappa_log_end,
+            num_kappas,
+            decrease_kappa_factor,
+            num_ar_iters,
+            num_full_iters,
             config_overrides=config_overrides,
         )
     elif command == "fit_ar":

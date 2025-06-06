@@ -1,4 +1,4 @@
-import keypoint_moseq as kpms # type: ignore # type: ignore
+import keypoint_moseq as kpms # type: ignore
 import numpy as np
 
 from utils.print_legal import print_legal
@@ -8,14 +8,16 @@ from utils.load_data_and_config import load_data_and_config
 def kappa_scan(
     project_dir,
     model_name,
-    kappa_values_str,
+    kappa_log_start = 3,
+    kappa_log_end = 7,
+    num_kappas = 5,
+    decrease_kappa_factor = 10,
+    num_ar_iters = 50,
+    num_full_iters = 200,
     config_overrides=None,
 ):
-    kappas = np.logspace(3, 7, 5)
-    decrease_kappa_factor = 10
-    num_ar_iters = 50
-    num_full_iters = 200
-    prefix = "kappa_scan"
+    kappas = np.logspace(kappa_log_start, kappa_log_end, num_kappas)
+    prefix = f"kappa_scan_{kappa_log_start}_{kappa_log_end}_{num_kappas}_{decrease_kappa_factor}"
 
     data, metadata, config = load_data_and_config(project_dir)
     if config_overrides:
@@ -23,10 +25,12 @@ def kappa_scan(
 
     pca = kpms.load_pca(project_dir)
 
+    print_legal(f"Iniciando scan de kappa com os valores: {kappas}")
+
     for kappa in kappas:
         print_legal(f"Ajustando modelo com kappa={kappa}")
         model_name = f"{prefix}-{kappa}"
-        model = kpms.init_model(data, pca=pca, **config())
+        model = kpms.init_model(data, pca=pca, **config)
 
         # Ajusta o modelo AR
         model = kpms.update_hypparams(model, kappa=kappa)
