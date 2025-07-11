@@ -2,6 +2,7 @@ __pycache__
 
 DLC
 
+projects/**/data
 projects/**/grid_movies
 projects/**/trajectory_plots
 projects/**/results
