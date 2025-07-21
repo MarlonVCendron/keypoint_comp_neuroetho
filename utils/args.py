@@ -22,7 +22,7 @@ def build_parser():
         "--mixed-map-iters",
         type=int,
         default=8,
-        help="Número de batches. Diminui o uso de memória, mas aumenta o tempo de execução.",
+        help="Número de batches. Diminui o uso de memória, mas aumenta o tempo de execução. Por padrão, 8.",
     )
     
     subparsers = parser.add_subparsers(

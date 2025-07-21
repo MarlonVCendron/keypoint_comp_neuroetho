@@ -68,7 +68,7 @@ python -m main --project-dir <nome_do_projeto> kappa_scan \
     --kappa-log-end 7 \
     --num-kappas 5 \
     --num-ar-iters 50 \
-    --num-full-iters 200
+    --iters 200
 ```
 
 Este comando irá treinar 5 modelos com `kappa` variando de $10^3$ a $10^7$. Os parâmetros `--num-ar-iters` e `--num-full-iters` controlam o número de iterações para o ajuste dos modelos AR e AR-HMM, respectivamente.
@@ -130,3 +130,10 @@ conda env export --no-builds > env.yml
 ```sh
 export XLA_PYTHON_CLIENT_MEM_FRACTION=0.5
 ```
+
+##### Erros comuns
+
+- `AttributeError: jax.tree_map was removed in JAX v0.6.0: use jax.tree.map (jax v0.4.25 or newer) or jax.tree_util.tree_map (any
+  JAX version).`
+
+Solução fuleira: Substituir ocorrências de `jax.tree_map` por `jax.tree.map` em `.../envs/keypoint_comp_neuroetho/lib/python3.10/site-packages/jax_moseq/utils/debugging.py`

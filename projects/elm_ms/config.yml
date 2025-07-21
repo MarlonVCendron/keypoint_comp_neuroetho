@@ -46,6 +46,10 @@ use_bodyparts:
 skeleton:
 - - snout
   - skull
+- - snout
+  - left_ear
+- - snout
+  - right_ear
 - - skull
   - left_ear
 - - skull
@@ -84,13 +88,16 @@ skeleton:
   - mid_back
 - - mid_back
   - right_back
+- - left_back
+  - tail_base
 - - mid_back
+  - tail_base
+- - right_back
   - tail_base
 - - tail_base
   - tail_mid
 - - tail_mid
   - tail_tip
-
 
 # used to initialize heading
 anterior_bodyparts:
@@ -110,7 +117,6 @@ posterior_bodyparts:
 - tail_tip
 
 
-
 #==================== FITTING =====================#
 
 # upper bound of uniform noise added to the data during initial AR-HMM fitting; this is used to regularize the model
@@ -127,8 +133,8 @@ conf_threshold: 0.5
 
 # parameters to convert neural net likelihoods to error size priors
 error_estimator:
-  intercept: 0.25
-  slope: -0.5
+  intercept: 0.545167253346974
+  slope: -0.7668218914784645
 
 # keypoint observation hyperparameters
 obs_hypparams:
@@ -179,7 +185,6 @@ video_dir:
 - projects/elm_ms/data/Videos/G66
 - projects/elm_ms/data/Videos/G67
 - projects/elm_ms/data/Videos/G68
-
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn
