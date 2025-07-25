@@ -3,7 +3,9 @@
 from utils.args import build_parser, parser, get_arg
 from commands import init_project, fit_pca, fit_ar, fit_arhmm, kappa_scan, noise_calibration
 from jax_moseq.utils import set_mixed_map_iters
-
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 
 def main():
     build_parser()
@@ -22,7 +24,6 @@ def main():
     num_kappas = get_arg('num_kappas')
     decrease_kappa_factor = get_arg('decrease_kappa_factor')
     num_ar_iters = get_arg('num_ar_iters')
-    num_full_iters = get_arg('num_full_iters')
     mixed_map_iters = get_arg('mixed_map_iters')
 
     set_mixed_map_iters(mixed_map_iters)
@@ -40,7 +41,7 @@ def main():
             num_kappas=num_kappas,
             decrease_kappa_factor=decrease_kappa_factor,
             num_ar_iters=num_ar_iters,
-            num_iters=num_full_iters,
+            num_iters=iters,
             config_overrides=config_overrides,
         )
     elif command == "fit_ar":
