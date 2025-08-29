@@ -8,3 +8,4 @@ projects/**/trajectory_plots
 projects/**/results
 projects/**/checkpoint.h5
 projects/**/results.h5
+projects/**/fitting_progress.pdf

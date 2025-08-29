@@ -66,6 +66,12 @@ def build_parser():
         help="Valor de Kappa para o modelo AR-HMM. Sobrescreve o valor no config.yml se fornecido.",
     )
     
+    # Subparser para métricas do scan de kappa
+    parser_kappa_metrics = subparsers.add_parser(
+        "kappa_scan_metrics",
+        help="Métricas do scan de kappa para comparar modelos.",
+    )
+
     # Subparser para scan de kappa
     parser_kappa = subparsers.add_parser(
         "kappa_scan",
