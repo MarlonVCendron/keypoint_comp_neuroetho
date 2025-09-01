@@ -133,8 +133,8 @@ conf_threshold: 0.5
 
 # parameters to convert neural net likelihoods to error size priors
 error_estimator:
-  intercept: 0.545167253346974
-  slope: -0.7668218914784645
+  intercept: 0.515855724955158
+  slope: -0.7278321387317824
 
 # keypoint observation hyperparameters
 obs_hypparams:
@@ -147,7 +147,7 @@ obs_hypparams:
 ar_hypparams:
   K_0_scale: 10.0
   S_0_scale: 0.01
-  latent_dim: 10
+  latent_dim: 9
   nlags: 3
 
 # transition hyperparameters
@@ -175,16 +175,17 @@ conf_pseudocount: 0.001
 
 # directory with videos from which keypoints were derived (used for crowd movies)
 video_dir:
-- projects/old_elm_ms/data/Videos/G0/
-- projects/old_elm_ms/data/Videos/G39
-- projects/old_elm_ms/data/Videos/G42
-- projects/old_elm_ms/data/Videos/G43
-- projects/old_elm_ms/data/Videos/G45
-- projects/old_elm_ms/data/Videos/G64
-- projects/old_elm_ms/data/Videos/G65
-- projects/old_elm_ms/data/Videos/G66
-- projects/old_elm_ms/data/Videos/G67
-- projects/old_elm_ms/data/Videos/G68
+- projects/elm_ms/data/vids/G0/
+- projects/elm_ms/data/vids/G39
+- projects/elm_ms/data/vids/G41
+- projects/elm_ms/data/vids/G42
+- projects/elm_ms/data/vids/G43
+- projects/elm_ms/data/vids/G45
+# - projects/elm_ms/data/vids/G64
+- projects/elm_ms/data/vids/G65
+# - projects/elm_ms/data/vids/G66
+- projects/elm_ms/data/vids/G67
+# - projects/elm_ms/data/vids/G68
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn

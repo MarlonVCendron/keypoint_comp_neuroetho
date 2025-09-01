@@ -1,8 +1,10 @@
 # Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
-import keypoint_moseq as kpms # type: ignore
 from utils.args import build_parser, parser, get_arg
 from commands import init_project, fit_pca, fit_ar, fit_arhmm, kappa_scan, kappa_scan_metrics
 from jax_moseq.utils import set_mixed_map_iters
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg')
 
 def main():
     build_parser()
@@ -29,8 +31,6 @@ def main():
         init_project(project_dir=project_dir)
     elif command == "fit_pca":
         fit_pca(project_dir=project_dir, config_overrides=config_overrides)
-    elif command == "kappa_scan_metrics":
-        kappa_scan_metrics(project_dir=project_dir)
     elif command == "kappa_scan":
         kappa_scan(
             project_dir=project_dir,
@@ -43,6 +43,8 @@ def main():
             num_iters=iters,
             config_overrides=config_overrides,
         )
+    elif command == "kappa_scan_metrics":
+        kappa_scan_metrics(project_dir=project_dir)
     elif command == "fit_ar":
         fit_ar(
             project_dir=project_dir,
