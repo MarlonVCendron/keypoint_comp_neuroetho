@@ -114,6 +114,17 @@ def build_parser():
         help="Número de iterações para o ajuste do modelo AR-HMM.",
     )
 
+    parser_results = subparsers.add_parser(
+        "results",
+        help="Gera os resultados do modelo.",
+    )
+    parser_results.add_argument(
+        "--num-ar-iters-checkpoint",
+        type=int,
+        required=True,
+        help="Número da iteração do checkpoint do modelo AR a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
+    )
+
     return parser
 
 def get_args():

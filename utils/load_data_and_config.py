@@ -20,4 +20,4 @@ def load_data_and_config(project_dir):
     config = load_config(project_dir)
     coordinates, confidences, bodyparts = load_keypoints(project_dir)
     data, metadata = kpms.format_data(coordinates, confidences, **config)
-    return data, metadata, config
+    return data, metadata, config, coordinates
