@@ -147,14 +147,14 @@ obs_hypparams:
 ar_hypparams:
   K_0_scale: 10.0
   S_0_scale: 0.01
-  latent_dim: 9
+  latent_dim: 8
   nlags: 3
 
 # transition hyperparameters
 trans_hypparams:
   alpha: 5.7
   gamma: 1000.0
-  kappa: 1000000.0
+  kappa: 10000.0
   num_states: 100
 
 # centroid movement hyperparameters
@@ -175,17 +175,18 @@ conf_pseudocount: 0.001
 
 # directory with videos from which keypoints were derived (used for crowd movies)
 video_dir:
-- projects/elm_ms/data/vids/G0/
-- projects/elm_ms/data/vids/G39
-- projects/elm_ms/data/vids/G41
-- projects/elm_ms/data/vids/G42
-- projects/elm_ms/data/vids/G43
-- projects/elm_ms/data/vids/G45
+# - projects/elm_ms/data/vids/G0/
+# - projects/elm_ms/data/vids/G39
+# - projects/elm_ms/data/vids/G41
+# - projects/elm_ms/data/vids/G42
+# - projects/elm_ms/data/vids/G43
+# - projects/elm_ms/data/vids/G45
 # - projects/elm_ms/data/vids/G64
-- projects/elm_ms/data/vids/G65
+# - projects/elm_ms/data/vids/G65
 # - projects/elm_ms/data/vids/G66
-- projects/elm_ms/data/vids/G67
+# - projects/elm_ms/data/vids/G67
 # - projects/elm_ms/data/vids/G68
+- projects/elm_ms/data/vids/T
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn

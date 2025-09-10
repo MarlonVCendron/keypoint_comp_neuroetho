@@ -40,5 +40,6 @@ def fit_arhmm(
         ar_only=False,
         start_iter=current_iter,
         num_iters=current_iter + iters,
+        parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
     )
     print_legal(f"Ajuste do AR-HMM {model_name} completo.")

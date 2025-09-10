@@ -43,6 +43,7 @@ def kappa_scan(
             ar_only=True,
             num_iters=num_ar_iters,
             save_every_n_iters=25,
+            parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memory
         )[0]
 
         # Ajusta o modelo AR-HMM
@@ -57,6 +58,7 @@ def kappa_scan(
             start_iter=num_ar_iters,
             num_iters=num_iters + num_ar_iters,
             save_every_n_iters=25,
+            parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memory
         )
 
     kpms.plot_kappa_scan(kappas, project_dir, prefix)

@@ -29,6 +29,7 @@ def fit_ar(project_dir, model_name, num_ar_iters, config_overrides=None):
         model_name,
         ar_only=True,
         num_iters=num_ar_iters,
+        parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memory
     )
 
     print_legal(f"Ajuste do modelo AR completo. Modelo salvo como {model_name}.")
