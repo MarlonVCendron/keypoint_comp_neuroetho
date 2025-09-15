@@ -9,7 +9,7 @@ def results(
     num_ar_iters_checkpoint,
     config_overrides=None,
 ):
-    _, _, config, coordinates = load_data_and_config(project_dir)
+    _, _, config, coordinates, video_frame_indexes = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 
@@ -25,7 +25,7 @@ def results(
 
     # results = kpms.load_results(project_dir, model_name)
     
-    kpms.generate_trajectory_plots(coordinates, results, project_dir, model_name, **config)
+    kpms.generate_trajectory_plots(coordinates, results, project_dir, model_name, video_frame_indexes=video_frame_indexes, **config)
     
-    kpms.generate_grid_movies(results, project_dir, model_name, coordinates=coordinates, **config);
+    kpms.generate_grid_movies(results, project_dir, model_name, coordinates=coordinates, video_frame_indexes=video_frame_indexes, **config);
 
