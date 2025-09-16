@@ -7,7 +7,7 @@ from os import path
 def fit_pca(project_dir, config_overrides=None):
     """Fits and saves PCA."""
 
-    data, metadata, config = load_data_and_config(project_dir)
+    data, metadata, config, _, _ = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 

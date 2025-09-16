@@ -1,5 +1,6 @@
 import keypoint_moseq as kpms # type: ignore
 from utils.print_legal import print_legal
+from utils.video_frame_indexes import get_video_frame_indexes
 
 
 def load_config(project_dir):
@@ -19,6 +20,6 @@ def load_data_and_config(project_dir):
     print_legal(f"Carregando configuração e keypoints do DLC de: {project_dir}")
     config = load_config(project_dir)
     coordinates, confidences, bodyparts = load_keypoints(project_dir)
-    coordinates, confidences, video_frame_indexes = video_frame_indexes(coordinates, confidences)
+    coordinates, confidences, video_frame_indexes = get_video_frame_indexes(coordinates, confidences)
     data, metadata = kpms.format_data(coordinates, confidences, **config)
     return data, metadata, config, coordinates, video_frame_indexes

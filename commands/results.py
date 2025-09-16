@@ -6,7 +6,7 @@ from utils.print_legal import print_legal
 def results(
     project_dir,
     model_name,
-    num_ar_iters_checkpoint,
+    checkpoint,
     config_overrides=None,
 ):
     _, _, config, coordinates, video_frame_indexes = load_data_and_config(project_dir)
@@ -16,14 +16,14 @@ def results(
     model, data, metadata, current_iter = kpms.load_checkpoint(
         project_dir,
         model_name,
-        iteration=num_ar_iters_checkpoint,
+        iteration=checkpoint,
     )
 
-    results = kpms.extract_results(model, metadata, project_dir, model_name)
+    # results = kpms.extract_results(model, metadata, project_dir, model_name)
 
-    # results = kpms.apply_model(model, data, metadata, project_dir, model_name, **config)
+    results = kpms.apply_model(model, data, metadata, project_dir, model_name, **config)
 
-    # results = kpms.load_results(project_dir, model_name)
+    results = kpms.load_results(project_dir, model_name)
     
     kpms.generate_trajectory_plots(coordinates, results, project_dir, model_name, video_frame_indexes=video_frame_indexes, **config)
     

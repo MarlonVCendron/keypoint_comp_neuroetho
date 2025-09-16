@@ -37,33 +37,39 @@ def build_parser():
     # Subparser para ajustar PCA
     parser_pca = subparsers.add_parser("fit_pca", help="Ajusta e salva PCA.")
     
-    # Subparser para ajustar modelo AR
-    parser_ar = subparsers.add_parser("fit_ar", help="Ajusta o modelo AR inicial.")
-    parser_ar.add_argument(
-        "--num-ar-iters",
+    # Subparser para ajustar AR-HMM
+    parser_arhmm = subparsers.add_parser("fit_arhmm", help="Ajusta o modelo AR-HMM inicial.")
+    parser_arhmm.add_argument(
+        "--iters",
         type=int,
         default=50,
         help="Número de iterações para o ajuste do modelo AR. Este também será o número da iteração do checkpoint.",
-    )
-    
-    # Subparser para ajustar modelo AR-HMM
-    parser_arhmm = subparsers.add_parser(
-        "fit_arhmm", help="Ajusta o modelo AR-HMM, carregando um modelo AR pré-treinado."
-    )
-    parser_arhmm.add_argument(
-        "--num-ar-iters-checkpoint",
-        type=int,
-        required=True,
-        help="Número da iteração do checkpoint do modelo AR a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
-    )
-    parser_arhmm.add_argument(
-        "--iters", type=int, default=500, help="Número de iterações para o ajuste do modelo AR-HMM."
     )
     parser_arhmm.add_argument(
         "--kappa",
         type=float,
         default=None,
         help="Valor de Kappa para o modelo AR-HMM. Sobrescreve o valor no config.yml se fornecido.",
+    )
+    
+    # Subparser para ajustar modelo completo
+    parser_full_model = subparsers.add_parser(
+        "fit_full_model", help="Ajusta o modelo completo, carregando um modelo AR-HMM pré-treinado."
+    )
+    parser_full_model.add_argument(
+        "--checkpoint",
+        type=int,
+        required=True,
+        help="Número da iteração do checkpoint a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
+    )
+    parser_full_model.add_argument(
+        "--iters", type=int, default=500, help="Número de iterações para o ajuste do modelo completo."
+    )
+    parser_full_model.add_argument(
+        "--kappa",
+        type=float,
+        default=None,
+        help="Valor de Kappa para o modelo completo. Sobrescreve o valor no config.yml se fornecido.",
     )
     
     # Subparser para métricas do scan de kappa

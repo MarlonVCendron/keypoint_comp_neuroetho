@@ -103,19 +103,19 @@ obs_hypparams:
 ar_hypparams:
   K_0_scale: 10.0
   S_0_scale: 0.01
-  latent_dim: 8
+  latent_dim: 6
   nlags: 3
 
 # transition hyperparameters
 trans_hypparams:
   alpha: 5.7
   gamma: 1000.0
-  kappa: 10000.0
+  kappa: 100000.0
   num_states: 100
 
 # centroid movement hyperparameters
 cen_hypparams:
-  sigmasq_loc: 0.5
+  sigmasq_loc: 0.5010499897215188
 
 
 #===================== OTHER ======================#
