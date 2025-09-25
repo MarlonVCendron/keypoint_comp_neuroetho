@@ -19,13 +19,22 @@ def results(
         iteration=checkpoint,
     )
 
-    # results = kpms.extract_results(model, metadata, project_dir, model_name)
+    results = kpms.extract_results(model, metadata, project_dir, model_name)
 
-    results = kpms.apply_model(model, data, metadata, project_dir, model_name, **config)
+    # results = kpms.apply_model(model, data, metadata, project_dir, model_name, **config)
 
-    results = kpms.load_results(project_dir, model_name)
+    # results = kpms.load_results(project_dir, model_name)
     
-    kpms.generate_trajectory_plots(coordinates, results, project_dir, model_name, video_frame_indexes=video_frame_indexes, **config)
+    # kpms.generate_trajectory_plots(coordinates, results, project_dir, model_name, video_frame_indexes=video_frame_indexes, **config)
     
-    kpms.generate_grid_movies(results, project_dir, model_name, coordinates=coordinates, video_frame_indexes=video_frame_indexes, **config);
+    kpms.generate_grid_movies(
+        results,
+        project_dir,
+        model_name,
+        coordinates=coordinates,
+        video_frame_indexes=video_frame_indexes,
+        min_frequency=0.01,
+        overlay_keypoints=True,
+        **config
+    )
 

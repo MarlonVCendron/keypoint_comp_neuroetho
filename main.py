@@ -49,6 +49,7 @@ def main():
             project_dir=project_dir,
             model_name=model_name,
             iters=iters,
+            kappa=kappa,
             config_overrides=config_overrides,
         )
     elif command == "fit_full_model":
