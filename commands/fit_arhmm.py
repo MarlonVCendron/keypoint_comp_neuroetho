@@ -13,7 +13,7 @@ def fit_arhmm(project_dir, model_name, iters, kappa=None, config_overrides=None)
         f"Ajustando o modelo AR-HMM para o projeto: {project_dir}, nome do modelo: {model_name}, iterações: {iters}"
     )
 
-    data, metadata, config, coordinates, video_frame_indexes = load_data_and_config(project_dir)
+    data, metadata, config, coordinates, video_frame_indexes, _ = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 

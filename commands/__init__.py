@@ -6,3 +6,4 @@ from commands.kappa_scan import kappa_scan
 from commands.noise_calibration import noise_calibration
 from commands.kappa_scan_metrics import kappa_scan_metrics
 from commands.results import results
+from commands.outliers import outliers

@@ -1,6 +1,6 @@
 # Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
 from utils.args import build_parser, parser, get_arg
-from commands import init_project, fit_pca, fit_arhmm, fit_full_model, kappa_scan, kappa_scan_metrics, results
+from commands import init_project, fit_pca, fit_arhmm, fit_full_model, kappa_scan, kappa_scan_metrics, results, outliers
 from jax_moseq.utils import set_mixed_map_iters
 import matplotlib.pyplot as plt
 import matplotlib
@@ -28,6 +28,8 @@ def main():
 
     if command == "init":
         init_project(project_dir=project_dir)
+    elif command == "outliers":
+        outliers(project_dir=project_dir)
     elif command == "fit_pca":
         fit_pca(project_dir=project_dir, config_overrides=config_overrides)
     elif command == "kappa_scan":

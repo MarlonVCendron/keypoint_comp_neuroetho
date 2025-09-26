@@ -19,7 +19,7 @@ def kappa_scan(
     kappas = np.logspace(kappa_log_start, kappa_log_end, num_kappas)
     prefix = f"kappa_scan_{kappa_log_start}_{kappa_log_end}_{num_kappas}_{decrease_kappa_factor}"
 
-    data, metadata, config, coordinates, video_frame_indexes = load_data_and_config(project_dir)
+    data, metadata, config, coordinates, video_frame_indexes, _ = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 

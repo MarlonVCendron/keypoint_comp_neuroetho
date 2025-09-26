@@ -103,7 +103,7 @@ obs_hypparams:
 ar_hypparams:
   K_0_scale: 10.0
   S_0_scale: 0.01
-  latent_dim: 6
+  latent_dim: 4
   nlags: 3
 
 # transition hyperparameters
@@ -115,7 +115,7 @@ trans_hypparams:
 
 # centroid movement hyperparameters
 cen_hypparams:
-  sigmasq_loc: 0.5010499897215188
+  sigmasq_loc: 0.49365502467941363
 
 
 #===================== OTHER ======================#
@@ -131,7 +131,7 @@ conf_pseudocount: 0.001
 
 # directory with videos from which keypoints were derived (used for crowd movies)
 video_dir:
-- projects/elm_ms/data/vids/T
+- projects/elm_ms/data/vids/T_clean
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn

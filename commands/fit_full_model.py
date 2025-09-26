@@ -11,7 +11,7 @@ def fit_full_model(
     kappa=None,
     config_overrides=None,
 ):
-    _, _, config, _, _ = load_data_and_config(project_dir)
+    _, _, config, _, _, _ = load_data_and_config(project_dir)
     if config_overrides:
         config.update(config_overrides)
 
@@ -39,6 +39,6 @@ def fit_full_model(
         ar_only=False,
         start_iter=current_iter,
         num_iters=current_iter + iters,
-        parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
+        # parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
     )
     print_legal(f"Ajuste do modelo completo {model_name} completo.")

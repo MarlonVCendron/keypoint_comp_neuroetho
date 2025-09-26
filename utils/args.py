@@ -33,6 +33,9 @@ def build_parser():
     
     # Subparser para inicializar o projeto
     parser_init = subparsers.add_parser("init", help="Inicializa o projeto.")
+
+    # Subparser para remoção de outliers
+    parser_init = subparsers.add_parser("outliers", help="Remove os outliers")
     
     # Subparser para ajustar PCA
     parser_pca = subparsers.add_parser("fit_pca", help="Ajusta e salva PCA.")
