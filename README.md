@@ -73,23 +73,31 @@ python -m main --project-dir <nome_do_projeto> kappa_scan \
 
 Este comando irá treinar 5 modelos com `kappa` variando de $10^3$ a $10^7$. Os parâmetros `--num-ar-iters` e `--num-full-iters` controlam o número de iterações para o ajuste dos modelos AR e AR-HMM, respectivamente.
 
-##### Treinamento do AR
+##### Treinamento do AR-HMM
 
-É recomendado inicialmente treinar apenas o modelo AR por algumas iterações utilizando o comando a seguir e o parâmetro
-`--num-ar-iters` para definir o número de iterações. Se não especificado, o valor padrão é 50. Você também pode especificar
+É recomendado inicialmente treinar apenas o modelo AR-HMM por algumas iterações utilizando o comando a seguir e o parâmetro
+`--iters` para definir o número de iterações. Se não especificado, o valor padrão é 50. Você também pode especificar
 o nome do modelo com o parâmetro `--model-name`.
 
 ```sh
-python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> fit_ar --num-ar-iters <número_de_iterações>
+python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> fit_arhmm --num-ar-iters <número_de_iterações>
 ```
 
-##### Treinamento do AR-HMM
+##### Treinamento do modelo completo Keypoint MoSeq
 
+Treina o modelo completo Keypoint MoSeq, carregando o modelo AR-HMM pré-treinado.
 
+```sh
+python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> fit_full_model --checkpoint <número_da_iteração_do_checkpoint_do_modelo> --iters <número_de_iterações> --kappa <valor_de_kappa>
+```
 
+##### Gerar os resultados
 
+Gera os resultados do modelo, incluindo as animações e os gráficos.
 
-
+```sh
+python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> results --checkpoint <número_da_iteração_do_checkpoint_do_modelo>
+```
 
 ---
 
