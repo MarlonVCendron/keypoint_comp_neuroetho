@@ -8,8 +8,6 @@ from os import path
 
 
 def outliers(project_dir):
-    kpms.update_config(project_dir, outlier_scale_factor=6.0)
-
     data, metadata, config, coordinates, _, confidences = load_data_and_config(
         project_dir, remove_outliers=False
     )

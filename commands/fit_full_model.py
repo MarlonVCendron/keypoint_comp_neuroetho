@@ -39,6 +39,6 @@ def fit_full_model(
         ar_only=False,
         start_iter=current_iter,
         num_iters=current_iter + iters,
-        # parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
+        parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
     )
     print_legal(f"Ajuste do modelo completo {model_name} completo.")
