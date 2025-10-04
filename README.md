@@ -112,6 +112,14 @@ Gera os resultados do modelo, incluindo as animações e os gráficos.
 python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> results --checkpoint <número_da_iteração_do_checkpoint_do_modelo>
 ```
 
+##### Validação
+
+Validação com Simba e dados de rearing.
+
+```sh
+python -m main --project-dir <nome_do_projeto> --model-name <nome_do_modelo> validation --checkpoint <número_da_iteração_do_checkpoint_do_modelo>
+```
+
 ---
 
 #### Conda

@@ -157,6 +157,16 @@ def build_parser():
         help="Número da iteração do checkpoint do modelo AR a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
     )
 
+    parser_validation = subparsers.add_parser(
+        "validation",
+        help="Valida o modelo.",
+    )
+    parser_validation.add_argument(
+        "--checkpoint",
+        type=int,
+        required=True,
+        help="Número da iteração do checkpoint do modelo a ser carregado.",
+    )
     return parser
 
 def get_args():
