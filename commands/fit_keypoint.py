@@ -3,7 +3,7 @@ from utils.load_data_and_config import load_data_and_config
 from utils.print_legal import print_legal
 
 
-def fit_full_model(
+def fit_keypoint(
     project_dir,
     model_name,
     checkpoint,
@@ -23,7 +23,7 @@ def fit_full_model(
     )
 
     print_legal(
-        f"Iniciando ajuste do modelo completo para o projeto: {project_dir}, nome do modelo: {model_name}"
+        f"Iniciando ajuste do modelo keypoint para o projeto: {project_dir}, nome do modelo: {model_name}"
     )
 
     kappa_to_use = kappa if kappa is not None else config.get("kappa", 1e4)
@@ -41,4 +41,4 @@ def fit_full_model(
         num_iters=current_iter + iters,
         parallel_message_passing=False # SALVA USO DE MEMÓRIA https://keypoint-moseq.readthedocs.io/en/latest/FAQs.html#out-of-memor
     )
-    print_legal(f"Ajuste do modelo completo {model_name} completo.")
+    print_legal(f"Ajuste do modelo keypoint {model_name} completo.")

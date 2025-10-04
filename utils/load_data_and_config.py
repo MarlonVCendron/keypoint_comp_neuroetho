@@ -19,7 +19,7 @@ def load_data_and_config(project_dir, remove_outliers=True):
     """Carrega a configuração e os keypoints do DLC."""
     print_legal(f"Carregando configuração e keypoints do DLC de: {project_dir}")
 
-    kpms.update_config(project_dir, outlier_scale_factor=12.0)
+    kpms.update_config(project_dir, outlier_scale_factor=24.0)
 
     config = load_config(project_dir)
     coordinates, confidences, bodyparts = load_keypoints(project_dir)

@@ -55,24 +55,24 @@ def build_parser():
         help="Valor de Kappa para o modelo AR-HMM. Sobrescreve o valor no config.yml se fornecido.",
     )
     
-    # Subparser para ajustar modelo completo
-    parser_full_model = subparsers.add_parser(
-        "fit_full_model", help="Ajusta o modelo completo, carregando um modelo AR-HMM pré-treinado."
+    # Subparser para ajustar modelo keypoint moseq
+    parser_keypoint = subparsers.add_parser(
+        "fit_keypoint", help="Ajusta o modelo keypoint, carregando um modelo AR-HMM pré-treinado."
     )
-    parser_full_model.add_argument(
+    parser_keypoint.add_argument(
         "--checkpoint",
         type=int,
         required=True,
         help="Número da iteração do checkpoint a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
     )
-    parser_full_model.add_argument(
-        "--iters", type=int, default=500, help="Número de iterações para o ajuste do modelo completo."
+    parser_keypoint.add_argument(
+        "--iters", type=int, default=500, help="Número de iterações para o ajuste do modelo keypoint."
     )
-    parser_full_model.add_argument(
+    parser_keypoint.add_argument(
         "--kappa",
         type=float,
         default=None,
-        help="Valor de Kappa para o modelo completo. Sobrescreve o valor no config.yml se fornecido.",
+        help="Valor de Kappa para o modelo keypoint. Sobrescreve o valor no config.yml se fornecido.",
     )
     
     # Subparser para métricas do scan de kappa
@@ -81,6 +81,29 @@ def build_parser():
         help="Métricas do scan de kappa para comparar modelos.",
     )
 
+    # Subparser para ajustar modelo completo
+    parser_fit_full_model = subparsers.add_parser(
+        "fit_full_model", help="Ajusta o modelo completo, carregando um modelo AR-HMM pré-treinado."
+    )
+    parser_fit_full_model.add_argument(
+        "--ar-iters", type=int, default=500, help="Número de iterações para o ajuste do modelo AR."
+    )
+    parser_fit_full_model.add_argument(
+        "--ar-kappa",
+        type=float,
+        default=None,
+        help="Valor de Kappa para o modelo AR. Sobrescreve o valor no config.yml se fornecido.",
+    )
+    parser_fit_full_model.add_argument(
+        "--iters", type=int, default=500, help="Número de iterações para o ajuste do modelo keypoint."
+    )
+    parser_fit_full_model.add_argument(
+        "--kappa",
+        type=float,
+        default=None,
+        help="Valor de Kappa para o modelo keypoint. Sobrescreve o valor no config.yml se fornecido.",
+    )
+    
     # Subparser para scan de kappa
     parser_kappa = subparsers.add_parser(
         "kappa_scan",

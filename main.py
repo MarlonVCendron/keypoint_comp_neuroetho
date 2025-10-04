@@ -1,6 +1,6 @@
 # Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
 from utils.args import build_parser, parser, get_arg
-from commands import init_project, fit_pca, fit_arhmm, fit_full_model, kappa_scan, kappa_scan_metrics, results, outliers
+from commands import init_project, fit_pca, fit_arhmm, fit_keypoint, kappa_scan, kappa_scan_metrics, results, outliers
 from jax_moseq.utils import set_mixed_map_iters
 import matplotlib.pyplot as plt
 import matplotlib
@@ -17,6 +17,7 @@ def main():
     num_ar_iters = get_arg('num_ar_iters')
     checkpoint = get_arg('checkpoint')
     iters = get_arg('iters')
+    ar_iters = get_arg('ar_iters')
     kappa = get_arg('kappa')
     kappa_log_start = get_arg('kappa_log_start')
     kappa_log_end = get_arg('kappa_log_end')
@@ -54,11 +55,27 @@ def main():
             kappa=kappa,
             config_overrides=config_overrides,
         )
-    elif command == "fit_full_model":
-        fit_full_model(
+    elif command == "fit_keypoint":
+        fit_keypoint(
             project_dir=project_dir,
             model_name=model_name,
             checkpoint=checkpoint,
+            iters=iters,
+            kappa=kappa,
+            config_overrides=config_overrides,
+        )
+    elif command == "fit":
+        fit_arhmm(
+            project_dir=project_dir,
+            model_name=model_name,
+            iters=ar_iters,
+            kappa=ar_kappa,
+            config_overrides=config_overrides,
+        )
+        fit_keypoint(
+            project_dir=project_dir,
+            model_name=model_name,
+            checkpoint=ar_iters,
             iters=iters,
             kappa=kappa,
             config_overrides=config_overrides,
