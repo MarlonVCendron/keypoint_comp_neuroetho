@@ -89,8 +89,8 @@ conf_threshold: 0.5
 
 # parameters to convert neural net likelihoods to error size priors
 error_estimator:
-  intercept: 0.5042923936326675
-  slope: -0.6187688581071408
+  intercept: 0.5100149977981842
+  slope: -0.4936621500890668
 
 # keypoint observation hyperparameters
 obs_hypparams:
@@ -115,7 +115,7 @@ trans_hypparams:
 
 # centroid movement hyperparameters
 cen_hypparams:
-  sigmasq_loc: 0.49365502467941363
+  sigmasq_loc: 0.7296164700838456
 
 
 #===================== OTHER ======================#
@@ -131,7 +131,8 @@ conf_pseudocount: 0.001
 
 # directory with videos from which keypoints were derived (used for crowd movies)
 video_dir:
-- projects/elm_ms/data/vids/T_clean
+- projects/elm_ms/data/vids/G68_clean
+- projects/elm_ms/data/vids/G39
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn

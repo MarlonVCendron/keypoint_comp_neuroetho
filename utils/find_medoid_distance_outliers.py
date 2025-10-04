@@ -25,7 +25,7 @@ def get_distance_to_medoid(coordinates: np.ndarray) -> np.ndarray:
 
 
 def find_medoid_distance_outliers(
-    coordinates: np.ndarray, outlier_scale_factor: float = 6.0, **kwargs
+    coordinates: np.ndarray, outlier_scale_factor: float, **kwargs
 ) -> dict[str, np.ndarray]:
     """Identify keypoint distance outliers using Median Absolute Deviation (MAD).
 
@@ -252,7 +252,7 @@ def plot_medoid_distance_outliers(
 def filter_outliers(coordinates: np.ndarray, confidences: np.ndarray, config: dict, cb: callable = None) -> tuple[np.ndarray, np.ndarray]:
     for recording_name in coordinates:
         raw_coords = coordinates[recording_name].copy()
-        outliers = find_medoid_distance_outliers(raw_coords, **config)
+        outliers = find_medoid_distance_outliers(raw_coords, outlier_scale_factor=6.0, **config)
         coordinates[recording_name] = kpms.interpolate_keypoints(raw_coords, outliers["mask"])
         confidences[recording_name] = np.where(outliers["mask"], 0, confidences[recording_name])
         if cb is not None:
