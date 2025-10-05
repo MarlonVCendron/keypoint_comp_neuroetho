@@ -19,6 +19,7 @@ def main():
     iters = get_arg('iters')
     ar_iters = get_arg('ar_iters')
     kappa = get_arg('kappa')
+    ar_kappa = get_arg('ar_kappa')
     kappa_log_start = get_arg('kappa_log_start')
     kappa_log_end = get_arg('kappa_log_end')
     num_kappas = get_arg('num_kappas')
@@ -64,7 +65,7 @@ def main():
             kappa=kappa,
             config_overrides=config_overrides,
         )
-    elif command == "fit":
+    elif command == "fit_full_model":
         fit_arhmm(
             project_dir=project_dir,
             model_name=model_name,
