@@ -26,6 +26,8 @@ def results(
         results = kpms.extract_results(model, metadata, project_dir, model_name)
 
     # results = kpms.apply_model(model, data, metadata, project_dir, model_name, parallel_message_passing=False, **config)
+
+    kpms.reindex_syllables_in_checkpoint(project_dir, model_name);
     
     kpms.generate_trajectory_plots(
         coordinates,
@@ -33,8 +35,8 @@ def results(
         project_dir,
         model_name,
         video_frame_indexes=video_frame_indexes,
-        min_frequency=0.01,
-        density_sample=False,
+        # min_frequency=0.01,
+        # density_sample=True,
         **config
     )
     
@@ -50,3 +52,4 @@ def results(
         **config
     )
 
+    kpms.plot_similarity_dendrogram(coordinates, results, project_dir, model_name, **config)
