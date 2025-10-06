@@ -115,7 +115,7 @@ trans_hypparams:
 
 # centroid movement hyperparameters
 cen_hypparams:
-  sigmasq_loc: 0.7296164700838456
+  sigmasq_loc: 0.5551018650536883
 
 
 #===================== OTHER ======================#
