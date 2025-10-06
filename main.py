@@ -25,6 +25,7 @@ def main():
     num_kappas = get_arg('num_kappas')
     decrease_kappa_factor = get_arg('decrease_kappa_factor')
     mixed_map_iters = get_arg('mixed_map_iters')
+    load_results = get_arg('load_results')
 
     set_mixed_map_iters(mixed_map_iters)
 
@@ -86,6 +87,7 @@ def main():
             project_dir=project_dir,
             model_name=model_name,
             checkpoint=checkpoint,
+            load_results=load_results,
             config_overrides=config_overrides,
         )
     elif command == "validation":

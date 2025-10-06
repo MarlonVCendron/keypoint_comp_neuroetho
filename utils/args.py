@@ -156,6 +156,11 @@ def build_parser():
         required=True,
         help="Número da iteração do checkpoint do modelo AR a ser carregado (ex: 50 se o modelo AR foi treinado por 50 iterações).",
     )
+    parser_results.add_argument(
+        "--load-results",
+        action="store_true",
+        help="Se verdadeiro, carrega os resultados do modelo.",
+    )
 
     parser_validation = subparsers.add_parser(
         "validation",
