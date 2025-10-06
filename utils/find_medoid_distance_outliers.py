@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from typing import Optional
 import os
 
+
 def get_distance_to_medoid(coordinates: np.ndarray) -> np.ndarray:
     """Compute the Euclidean distance from each keypoint to the medoid (median position)
     of all keypoints at each frame.
@@ -22,6 +23,28 @@ def get_distance_to_medoid(coordinates: np.ndarray) -> np.ndarray:
     """
     medoids = np.median(coordinates, axis=1)  # (n_frames, keypoint_dim)
     return np.linalg.norm(coordinates - medoids[:, None, :], axis=-1)  # (n_frames, n_keypoints)
+
+
+def get_keypoint_velocities(coordinates: np.ndarray, fps: float = 30.0) -> np.ndarray:
+    displacement = np.diff(coordinates, axis=0)  # (n_frames-1, n_keypoints, keypoint_dim)
+
+    velocities = np.linalg.norm(displacement, axis=-1) * fps
+
+    return velocities
+
+
+def get_keypoint_to_keypoint_distances(coordinates: np.ndarray) -> np.ndarray:
+    n_frames, n_keypoints, keypoint_dim = coordinates.shape
+
+    distances = np.zeros((n_frames, n_keypoints, n_keypoints))
+
+    for f in range(n_frames):
+        for i in range(n_keypoints):
+            for j in range(n_keypoints):
+                if i != j:
+                    distances[f, i, j] = np.linalg.norm(coordinates[f, i] - coordinates[f, j])
+
+    return distances
 
 
 def find_medoid_distance_outliers(
@@ -60,6 +83,64 @@ def find_medoid_distance_outliers(
     outlier_thresholds = MADs * outlier_scale_factor + medians  # (n_keypoints,)
     outlier_mask = distances > outlier_thresholds[None, :]  # (n_frames, n_keypoints)
     return {"mask": outlier_mask, "thresholds": outlier_thresholds}
+
+
+def find_velocity_outliers(
+    coordinates: np.ndarray, outlier_scale_factor: float = 4.0, fps: float = 30.0, **kwargs
+) -> dict[str, np.ndarray]:
+    velocities = get_keypoint_velocities(coordinates, fps)
+
+    medians = np.median(velocities, axis=0)
+    MADs = np.median(np.abs(velocities - medians[None, :]), axis=0)
+
+    outlier_thresholds = MADs * outlier_scale_factor + medians
+
+    outlier_mask = velocities > outlier_thresholds[None, :]
+
+    return {"mask": outlier_mask, "thresholds": outlier_thresholds}
+
+
+# Se o keypoint for anormalmente distante de X% dos outros keypoints, ele é considerado um outlier.
+def find_keypoint_distance_outliers(
+    coordinates: np.ndarray,
+    outlier_scale_factor: float = 6.0,
+    outlier_threshold_percentage: float = 0.5, #X%
+    **kwargs,
+) -> dict[str, np.ndarray]:
+    distances = get_keypoint_to_keypoint_distances(
+        coordinates
+    )  # (n_frames, n_keypoints, n_keypoints)
+    n_frames, n_keypoints, _ = distances.shape
+
+    medians = np.median(distances, axis=0)  # (n_keypoints, n_keypoints)
+    MADs = np.median(np.abs(distances - medians[None, :, :]), axis=0)  # (n_keypoints, n_keypoints)
+
+    outlier_thresholds = MADs * outlier_scale_factor + medians  # (n_keypoints, n_keypoints)
+
+    distance_outlier_mask = (
+        distances > outlier_thresholds[None, :, :]
+    )  # (n_frames, n_keypoints, n_keypoints)
+
+    keypoint_outlier_mask = np.zeros((n_frames, n_keypoints), dtype=bool)
+
+    for f in range(n_frames):
+        for i in range(n_keypoints):
+            distances_from_i = distance_outlier_mask[f, i, :]  # (n_keypoints,)
+
+            outlier_count = np.sum(
+                distances_from_i
+            )
+            total_other_keypoints = n_keypoints - 1
+
+            if outlier_count >= outlier_threshold_percentage * total_other_keypoints:
+                keypoint_outlier_mask[f, i] = True
+
+    return {
+        "mask": keypoint_outlier_mask,
+        "thresholds": outlier_thresholds,
+        "distance_outlier_mask": distance_outlier_mask,
+    }
+
 
 def plot_keypoint_traces(
     traces: list[np.ndarray],
@@ -249,12 +330,168 @@ def plot_medoid_distance_outliers(
     plt.close()
     print(f"Saved keypoint distance outlier plot for {recording_name} to {plot_path}.")
 
-def filter_outliers(coordinates: np.ndarray, confidences: np.ndarray, config: dict, cb: callable = None) -> tuple[np.ndarray, np.ndarray]:
-    for recording_name in coordinates:
+
+def plot_velocity_outliers(
+    project_dir: str,
+    recording_name: str,
+    original_coordinates: np.ndarray,
+    interpolated_coordinates: np.ndarray,
+    outlier_mask: np.ndarray,
+    outlier_thresholds: np.ndarray,
+    bodyparts: list[str],
+    fps: float = 30.0,
+    **kwargs,
+):
+    plot_path = os.path.join(
+        project_dir,
+        "quality_assurance",
+        "plots",
+        "keypoint_velocity_outliers",
+        f"{recording_name}.png",
+    )
+    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
+
+    original_velocities = get_keypoint_velocities(
+        original_coordinates, fps
+    )  # (n_frames-1, n_keypoints)
+    interpolated_velocities = get_keypoint_velocities(
+        interpolated_coordinates, fps
+    )  # (n_frames-1, n_keypoints)
+
+    fig = plot_keypoint_traces(
+        traces=[original_velocities, interpolated_velocities],
+        plot_title=f"{recording_name} - Velocity Outliers",
+        bodyparts=bodyparts,
+        line_labels=["Original", "Interpolated"],
+        thresholds=outlier_thresholds,
+        shading_mask=outlier_mask,
+    )
+
+    fig.savefig(plot_path, dpi=300)
+    plt.close()
+    print(f"Saved keypoint velocity outlier plot for {recording_name} to {plot_path}.")
+
+
+def plot_keypoint_distance_outliers(
+    project_dir: str,
+    recording_name: str,
+    original_coordinates: np.ndarray,
+    interpolated_coordinates: np.ndarray,
+    outlier_mask: np.ndarray,
+    outlier_thresholds: np.ndarray,
+    bodyparts: list[str],
+    **kwargs,
+):
+    plot_path = os.path.join(
+        project_dir,
+        "quality_assurance",
+        "plots",
+        "keypoint_distance_outliers",
+        f"{recording_name}.png",
+    )
+    os.makedirs(os.path.dirname(plot_path), exist_ok=True)
+
+    # Calculate keypoint-to-keypoint distances
+    original_distances = get_keypoint_to_keypoint_distances(original_coordinates)
+    interpolated_distances = get_keypoint_to_keypoint_distances(interpolated_coordinates)
+
+    n_frames, n_keypoints, _ = original_distances.shape
+
+    # Create a figure with subplots for each keypoint
+    fig, axes = plt.subplots(n_keypoints, 1, figsize=(16, 3 * n_keypoints), constrained_layout=True)
+    if n_keypoints == 1:
+        axes = [axes]
+
+    for keypoint_idx in range(n_keypoints):
+        ax = axes[keypoint_idx]
+
+        # Shade outlier frames
+        shaded_frames = np.where(outlier_mask[:, keypoint_idx])[0]
+        if len(shaded_frames) > 0:
+            for frame in shaded_frames:
+                ax.axvspan(frame - 0.5, frame + 0.5, alpha=0.1, color="grey")
+
+        # Plot distances from this keypoint to all other keypoints
+        for other_keypoint_idx in range(n_keypoints):
+            if other_keypoint_idx != keypoint_idx:
+                # Original distances
+                ax.plot(
+                    original_distances[:, keypoint_idx, other_keypoint_idx],
+                    alpha=0.7,
+                    label=f"Original to {bodyparts[other_keypoint_idx]}",
+                )
+
+                # Interpolated distances
+                ax.plot(
+                    interpolated_distances[:, keypoint_idx, other_keypoint_idx],
+                    alpha=0.7,
+                    linestyle="--",
+                    label=f"Interpolated to {bodyparts[other_keypoint_idx]}",
+                )
+
+                # Threshold line
+                threshold_value = outlier_thresholds[keypoint_idx, other_keypoint_idx]
+                ax.axhline(y=threshold_value, color="black", linestyle=":", alpha=0.5)
+
+        ax.set_xlabel("Frame")
+        ax.set_ylabel("Distance (pixels)")
+        ax.set_title(f"Distances from {bodyparts[keypoint_idx]} to other keypoints")
+        ax.legend(loc="upper right", fontsize=8)
+        ax.grid(True, alpha=0.3)
+
+    fig.suptitle(f"{recording_name} - Keypoint Distance Outliers", fontsize=16)
+    fig.savefig(plot_path, dpi=300)
+    plt.close()
+    print(f"Saved keypoint distance outlier plot for {recording_name} to {plot_path}.")
+
+
+def filter_outliers(
+    coordinates: np.ndarray,
+    confidences: np.ndarray,
+    config: dict,
+    cb: callable = None,
+    use_keypoint_distance_outliers: bool = True,
+    keypoint_distance_outlier_scale_factor: float = 4.0,
+    keypoint_distance_outlier_threshold_percentage: float = 0.3,
+) -> tuple[np.ndarray, np.ndarray]:
+    for i, recording_name in enumerate(coordinates):
+        print(f"{i+1}/{len(coordinates)}: {recording_name}")
         raw_coords = coordinates[recording_name].copy()
-        outliers = find_medoid_distance_outliers(raw_coords, outlier_scale_factor=6.0, **config)
-        coordinates[recording_name] = kpms.interpolate_keypoints(raw_coords, outliers["mask"])
-        confidences[recording_name] = np.where(outliers["mask"], 0, confidences[recording_name])
+
+        medoid_outliers = find_medoid_distance_outliers(
+            raw_coords, outlier_scale_factor=4.0, **config
+        )
+
+        if use_keypoint_distance_outliers:
+            keypoint_distance_outliers = find_keypoint_distance_outliers(
+                raw_coords,
+                outlier_scale_factor=keypoint_distance_outlier_scale_factor,
+                outlier_threshold_percentage=keypoint_distance_outlier_threshold_percentage,
+                **config,
+            )
+
+            # Combine outlier masks (OR operation - if either method detects outlier, mark as outlier)
+            combined_mask = medoid_outliers["mask"] | keypoint_distance_outliers["mask"]
+
+            # Create combined outliers dict
+            combined_outliers = {
+                "mask": combined_mask,
+                "medoid_thresholds": medoid_outliers["thresholds"],
+                "keypoint_distance_thresholds": keypoint_distance_outliers["thresholds"],
+                "medoid_outliers": medoid_outliers,
+                "keypoint_distance_outliers": keypoint_distance_outliers,
+            }
+        else:
+            combined_outliers = medoid_outliers
+
+        coordinates[recording_name] = kpms.interpolate_keypoints(
+            raw_coords, combined_outliers["mask"]
+        )
+        confidences[recording_name] = np.where(
+            combined_outliers["mask"], 0, confidences[recording_name]
+        )
+
         if cb is not None:
-            cb(coordinates, confidences, outliers, recording_name, raw_coords)
-    return coordinates, confidences, outliers
+            cb(coordinates, confidences, combined_outliers, recording_name, raw_coords)
+
+    return coordinates, confidences, combined_outliers
