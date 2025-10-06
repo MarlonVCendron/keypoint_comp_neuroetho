@@ -9,4 +9,10 @@ projects/**/results
 projects/**/checkpoint.h5
 projects/**/results.h5
 projects/**/fitting_progress.pdf
+projects/**/similarity_dendrogram*
 projects/**/quality_assurance
+
+!projects/elm_ms/12k_modelo_legal/grid_movies
+!projects/elm_ms/12k_modelo_legal/trajectory_plots
+!projects/elm_ms/12k_modelo_legal/results.h5
+!projects/elm_ms/12k_modelo_legal/similarity_dendrogram*
