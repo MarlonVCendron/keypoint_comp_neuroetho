@@ -3,6 +3,9 @@ __pycache__
 DLC
 
 projects/**/data
+projects/**/pca.p
+projects/**/pca_scree.pdf
+projects/**/pcs-xy.pdf
 projects/**/grid_movies
 projects/**/trajectory_plots
 projects/**/results
