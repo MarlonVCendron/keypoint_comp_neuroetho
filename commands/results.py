@@ -14,21 +14,21 @@ def results(
     if config_overrides:
         config.update(config_overrides)
 
-    model, data, metadata, current_iter = kpms.load_checkpoint(
-        project_dir,
-        model_name,
-        iteration=checkpoint,
-    )
+
+    kpms.reindex_syllables_in_checkpoint(project_dir, model_name);
 
     if load_results:
         results = kpms.load_results(project_dir, model_name)
     else:
+        model, _, metadata, _ = kpms.load_checkpoint(
+            project_dir,
+            model_name,
+            iteration=checkpoint,
+        )
         results = kpms.extract_results(model, metadata, project_dir, model_name)
 
     # results = kpms.apply_model(model, data, metadata, project_dir, model_name, parallel_message_passing=False, **config)
 
-    kpms.reindex_syllables_in_checkpoint(project_dir, model_name);
-    
     kpms.generate_trajectory_plots(
         coordinates,
         results,

@@ -10,3 +10,6 @@ def get_video_frame_indexes(coordinates, confidences):
   confidences = {k: confs[bounds[k][0]:bounds[k][1]] for k,confs in confidences.items()}
   video_frame_indexes = {k : np.arange(bounds[k][0], bounds[k][1]) for k in bounds}
   return coordinates, confidences, video_frame_indexes
+
+def skip_frames_in_array(array):
+  return array[start_frames_to_skip:len(array) - end_frames_to_skip]

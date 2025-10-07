@@ -94,8 +94,6 @@ def main():
         validation(
             project_dir=project_dir,
             model_name=model_name,
-            checkpoint=checkpoint,
-            config_overrides=config_overrides,
         )
     else:
         print(f"Comando desconhecido: {command}")
