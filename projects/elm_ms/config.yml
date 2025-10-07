@@ -39,8 +39,6 @@ use_bodyparts:
 - mid_back
 - right_back
 - tail_base
-- tail_mid
-- tail_tip
 
 # used for visualization only
 skeleton:
@@ -113,8 +111,6 @@ posterior_bodyparts:
 - mid_back
 - right_back
 - tail_base
-- tail_mid
-- tail_tip
 
 
 #==================== FITTING =====================#
@@ -133,8 +129,8 @@ conf_threshold: 0.5
 
 # parameters to convert neural net likelihoods to error size priors
 error_estimator:
-  intercept: 0.515855724955158
-  slope: -0.7278321387317824
+  intercept: 0.4982047552187215
+  slope: -0.5800803861435303
 
 # keypoint observation hyperparameters
 obs_hypparams:
@@ -147,7 +143,7 @@ obs_hypparams:
 ar_hypparams:
   K_0_scale: 10.0
   S_0_scale: 0.01
-  latent_dim: 5
+  latent_dim: 6
   nlags: 3
 
 # transition hyperparameters
@@ -159,7 +155,7 @@ trans_hypparams:
 
 # centroid movement hyperparameters
 cen_hypparams:
-  sigmasq_loc: 0.33962922047644634
+  sigmasq_loc: 0.3776449716013334
 
 
 #===================== OTHER ======================#

@@ -166,12 +166,7 @@ def build_parser():
         "validation",
         help="Valida o modelo.",
     )
-    parser_validation.add_argument(
-        "--checkpoint",
-        type=int,
-        required=True,
-        help="Número da iteração do checkpoint do modelo a ser carregado.",
-    )
+
     return parser
 
 def get_args():
