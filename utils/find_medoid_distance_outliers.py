@@ -35,15 +35,12 @@ def get_keypoint_velocities(coordinates: np.ndarray, fps: float = 30.0) -> np.nd
 
 def get_keypoint_to_keypoint_distances(coordinates: np.ndarray) -> np.ndarray:
     n_frames, n_keypoints, keypoint_dim = coordinates.shape
-
-    distances = np.zeros((n_frames, n_keypoints, n_keypoints))
-
-    for f in range(n_frames):
-        for i in range(n_keypoints):
-            for j in range(n_keypoints):
-                if i != j:
-                    distances[f, i, j] = np.linalg.norm(coordinates[f, i] - coordinates[f, j])
-
+    
+    # Broadcasting
+    diff = coordinates[:, :, None, :] - coordinates[:, None, :, :]
+    
+    distances = np.linalg.norm(diff, axis=-1)
+    
     return distances
 
 
