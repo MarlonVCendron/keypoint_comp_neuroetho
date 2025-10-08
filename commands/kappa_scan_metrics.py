@@ -14,3 +14,7 @@ def kappa_scan_metrics(project_dir):
 
     fig, ax = kpms.plot_eml_scores(eml_scores, eml_std_errs, model_names)
     fig.savefig(f"{project_dir}/eml_scores.png")
+
+    results = [kpms.load_results(project_dir, model_name) for model_name in model_names]
+    fig, ax = kpms.plot_confusion_matrix(*results)
+    fig.savefig(f"{project_dir}/confusion_matrix.png")

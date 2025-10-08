@@ -15,6 +15,7 @@ projects/**/fitting_progress.pdf
 projects/**/similarity_dendrogram*
 projects/**/quality_assurance
 projects/**/eml_scores.png
+projects/**/confusion_matrix.png
 
 !projects/elm_ms/12k_modelo_legal/grid_movies
 !projects/elm_ms/12k_modelo_legal/trajectory_plots
