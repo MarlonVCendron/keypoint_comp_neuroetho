@@ -47,7 +47,7 @@ def results(
         coordinates=coordinates,
         video_frame_indexes=video_frame_indexes,
         min_frequency=0.01,
-        overlay_keypoints=True,
+        # overlay_keypoints=True,
         density_sample=False,
         **config
     )
