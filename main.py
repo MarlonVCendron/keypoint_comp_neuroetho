@@ -1,6 +1,6 @@
 # Baseado em https://keypoint-moseq.readthedocs.io/en/latest/modeling.html
 from utils.args import build_parser, parser, get_arg
-from commands import init_project, fit_pca, fit_arhmm, fit_keypoint, kappa_scan, kappa_scan_metrics, results, outliers, validation
+from commands import init_project, fit_pca, fit_arhmm, fit_keypoint, kappa_scan, kappa_scan_metrics, results, outliers, validation, apply
 from jax_moseq.utils import set_mixed_map_iters
 import matplotlib.pyplot as plt
 import matplotlib
@@ -92,6 +92,11 @@ def main():
         )
     elif command == "validation":
         validation(
+            project_dir=project_dir,
+            model_name=model_name,
+        )
+    elif command == "apply":
+        apply(
             project_dir=project_dir,
             model_name=model_name,
         )

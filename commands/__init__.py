@@ -8,3 +8,4 @@ from commands.kappa_scan_metrics import kappa_scan_metrics
 from commands.results import results
 from commands.outliers import outliers
 from commands.validation import validation
+from commands.apply import apply
