@@ -19,6 +19,7 @@ def outliers(project_dir):
         lambda coordinates, confidences, combined_outliers, recording_name, raw_coords: plot_outliers(
             project_dir, config, coordinates, confidences, combined_outliers, recording_name, raw_coords
         ),
+        project_dir=project_dir,
     )
 
 
@@ -38,6 +39,7 @@ def plot_outliers(
 
 
 def print_keypoint_distance_outlier_summary(recording_name, combined_outliers):
+    medoid_mask = combined_outliers["medoid_outliers"]["mask"]
     keypoint_distance_mask = combined_outliers["keypoint_distance_outliers"]["mask"]
     combined_mask = combined_outliers["mask"]
     
@@ -46,17 +48,17 @@ def print_keypoint_distance_outlier_summary(recording_name, combined_outliers):
     
     medoid_outliers = np.sum(medoid_mask)
     keypoint_distance_outliers = np.sum(keypoint_distance_mask)
-    combined_outliers = np.sum(combined_mask)
+    combined_outliers_count = np.sum(combined_mask)
     
     medoid_percentage = (medoid_outliers / total_keypoints) * 100
     keypoint_distance_percentage = (keypoint_distance_outliers / total_keypoints) * 100
-    combined_percentage = (combined_outliers / total_keypoints) * 100
+    combined_percentage = (combined_outliers_count / total_keypoints) * 100
     
     print(f"\n=== Outliers para {recording_name} ===")
     print(f"Keypoints: {total_keypoints:,} ({n_frames:,} frames x {n_keypoints} keypoints)")
     print(f"Medoid distance outliers: {medoid_outliers:,} ({medoid_percentage:.2f}%)")
     print(f"Keypoint distance outliers: {keypoint_distance_outliers:,} ({keypoint_distance_percentage:.2f}%)")
-    print(f"Combined outliers: {combined_outliers:,} ({combined_percentage:.2f}%)")
+    print(f"Combined outliers: {combined_outliers_count:,} ({combined_percentage:.2f}%)")
     
     for i in range(n_keypoints):
         keypoint_medoid = np.sum(medoid_mask[:, i])

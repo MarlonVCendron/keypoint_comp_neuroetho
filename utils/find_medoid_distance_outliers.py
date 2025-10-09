@@ -5,6 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import Optional
 import os
+import h5py
+import hashlib
+import json
 
 
 def get_distance_to_medoid(coordinates: np.ndarray) -> np.ndarray:
@@ -450,36 +453,89 @@ def filter_outliers(
     use_keypoint_distance_outliers: bool = True,
     keypoint_distance_outlier_scale_factor: float = 4.0,
     keypoint_distance_outlier_threshold_percentage: float = 0.3,
+    project_dir: str = None,
 ) -> tuple[np.ndarray, np.ndarray]:
+    cache_path = get_cache_path(project_dir) if project_dir else None
+    
     for i, recording_name in enumerate(coordinates):
         print(f"{i+1}/{len(coordinates)}: {recording_name}")
         raw_coords = coordinates[recording_name].copy()
-
-        medoid_outliers = find_medoid_distance_outliers(
-            raw_coords, outlier_scale_factor=4.0, **config
-        )
-
-        if use_keypoint_distance_outliers:
-            keypoint_distance_outliers = find_keypoint_distance_outliers(
-                raw_coords,
-                outlier_scale_factor=keypoint_distance_outlier_scale_factor,
-                outlier_threshold_percentage=keypoint_distance_outlier_threshold_percentage,
-                **config,
+        
+        cache_key = None
+        cached_masks = None
+        
+        if cache_path:
+            cache_key = generate_cache_key(
+                recording_name,
+                raw_coords.shape,
+                4.0,
+                use_keypoint_distance_outliers,
+                keypoint_distance_outlier_scale_factor,
+                keypoint_distance_outlier_threshold_percentage,
+            )
+            cached_masks = load_cached_masks(cache_path, cache_key)
+        
+        if cached_masks:
+            print(f"  Using cached masks for {recording_name}")
+            medoid_outliers = {
+                "mask": cached_masks["medoid_mask"],
+                "thresholds": cached_masks["medoid_thresholds"],
+            }
+            
+            if use_keypoint_distance_outliers:
+                keypoint_distance_outliers = {
+                    "mask": cached_masks["keypoint_distance_mask"],
+                    "thresholds": cached_masks["keypoint_distance_thresholds"],
+                }
+                combined_mask = cached_masks["combined_mask"]
+                
+                combined_outliers = {
+                    "mask": combined_mask,
+                    "medoid_thresholds": medoid_outliers["thresholds"],
+                    "keypoint_distance_thresholds": keypoint_distance_outliers["thresholds"],
+                    "medoid_outliers": medoid_outliers,
+                    "keypoint_distance_outliers": keypoint_distance_outliers,
+                }
+            else:
+                combined_outliers = medoid_outliers
+        else:
+            print(f"  Computing masks for {recording_name}")
+            medoid_outliers = find_medoid_distance_outliers(
+                raw_coords, outlier_scale_factor=4.0, **config
             )
 
-            # Combine outlier masks (OR operation - if either method detects outlier, mark as outlier)
-            combined_mask = medoid_outliers["mask"] | keypoint_distance_outliers["mask"]
+            if use_keypoint_distance_outliers:
+                keypoint_distance_outliers = find_keypoint_distance_outliers(
+                    raw_coords,
+                    outlier_scale_factor=keypoint_distance_outlier_scale_factor,
+                    outlier_threshold_percentage=keypoint_distance_outlier_threshold_percentage,
+                    **config,
+                )
 
-            # Create combined outliers dict
-            combined_outliers = {
-                "mask": combined_mask,
-                "medoid_thresholds": medoid_outliers["thresholds"],
-                "keypoint_distance_thresholds": keypoint_distance_outliers["thresholds"],
-                "medoid_outliers": medoid_outliers,
-                "keypoint_distance_outliers": keypoint_distance_outliers,
-            }
-        else:
-            combined_outliers = medoid_outliers
+                combined_mask = medoid_outliers["mask"] | keypoint_distance_outliers["mask"]
+
+                combined_outliers = {
+                    "mask": combined_mask,
+                    "medoid_thresholds": medoid_outliers["thresholds"],
+                    "keypoint_distance_thresholds": keypoint_distance_outliers["thresholds"],
+                    "medoid_outliers": medoid_outliers,
+                    "keypoint_distance_outliers": keypoint_distance_outliers,
+                }
+            else:
+                combined_outliers = medoid_outliers
+            
+            if cache_path and cache_key:
+                masks_to_cache = {
+                    "medoid_mask": medoid_outliers["mask"],
+                    "medoid_thresholds": medoid_outliers["thresholds"],
+                }
+                if use_keypoint_distance_outliers:
+                    masks_to_cache.update({
+                        "keypoint_distance_mask": keypoint_distance_outliers["mask"],
+                        "keypoint_distance_thresholds": keypoint_distance_outliers["thresholds"],
+                        "combined_mask": combined_mask,
+                    })
+                save_cached_masks(cache_path, cache_key, masks_to_cache)
 
         coordinates[recording_name] = kpms.interpolate_keypoints(
             raw_coords, combined_outliers["mask"]
@@ -492,3 +548,76 @@ def filter_outliers(
             cb(coordinates, confidences, combined_outliers, recording_name, raw_coords)
 
     return coordinates, confidences, combined_outliers
+
+def generate_cache_key(
+    recording_name: str,
+    data_shape: tuple,
+    medoid_scale_factor: float,
+    use_keypoint_distance_outliers: bool,
+    keypoint_distance_outlier_scale_factor: float,
+    keypoint_distance_outlier_threshold_percentage: float,
+) -> str:
+    params = {
+        "recording_name": recording_name,
+        "data_shape": data_shape,
+        "medoid_scale_factor": medoid_scale_factor,
+        "use_keypoint_distance_outliers": use_keypoint_distance_outliers,
+        "keypoint_distance_outlier_scale_factor": keypoint_distance_outlier_scale_factor,
+        "keypoint_distance_outlier_threshold_percentage": keypoint_distance_outlier_threshold_percentage,
+    }
+    params_str = json.dumps(params, sort_keys=True)
+    return hashlib.md5(params_str.encode()).hexdigest()
+
+
+def get_cache_path(project_dir: str) -> str:
+    return os.path.join(project_dir, "outlier_masks_cache.h5")
+
+
+def load_cached_masks(cache_path: str, cache_key: str) -> Optional[dict]:
+    if not os.path.exists(cache_path):
+        return None
+    
+    try:
+        with h5py.File(cache_path, "r") as f:
+            if cache_key not in f:
+                return None
+            
+            group = f[cache_key]
+            masks = {}
+            
+            if "medoid_mask" in group:
+                masks["medoid_mask"] = group["medoid_mask"][:]
+            if "medoid_thresholds" in group:
+                masks["medoid_thresholds"] = group["medoid_thresholds"][:]
+            if "keypoint_distance_mask" in group:
+                masks["keypoint_distance_mask"] = group["keypoint_distance_mask"][:]
+            if "keypoint_distance_thresholds" in group:
+                masks["keypoint_distance_thresholds"] = group["keypoint_distance_thresholds"][:]
+            if "combined_mask" in group:
+                masks["combined_mask"] = group["combined_mask"][:]
+            
+            return masks
+    except Exception:
+        return None
+
+
+def save_cached_masks(cache_path: str, cache_key: str, masks: dict) -> None:
+    os.makedirs(os.path.dirname(cache_path), exist_ok=True)
+    
+    with h5py.File(cache_path, "a") as f:
+        if cache_key in f:
+            del f[cache_key]
+        
+        group = f.create_group(cache_key)
+        
+        if "medoid_mask" in masks:
+            group.create_dataset("medoid_mask", data=masks["medoid_mask"], compression="gzip")
+        if "medoid_thresholds" in masks:
+            group.create_dataset("medoid_thresholds", data=masks["medoid_thresholds"], compression="gzip")
+        if "keypoint_distance_mask" in masks:
+            group.create_dataset("keypoint_distance_mask", data=masks["keypoint_distance_mask"], compression="gzip")
+        if "keypoint_distance_thresholds" in masks:
+            group.create_dataset("keypoint_distance_thresholds", data=masks["keypoint_distance_thresholds"], compression="gzip")
+        if "combined_mask" in masks:
+            group.create_dataset("combined_mask", data=masks["combined_mask"], compression="gzip")
+
