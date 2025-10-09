@@ -6,13 +6,17 @@ import cv2
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from pathlib import Path
+from collections import Counter, defaultdict
+from scipy import stats
+from itertools import combinations
+from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score, confusion_matrix
 
 from utils.load_data_and_config import load_config
 from utils.print_legal import print_legal
 from utils.video_frame_indexes import skip_frames_in_array, start_frames_to_skip, end_frames_to_skip
 
 rearing_csvs_path = "./data/rearing_csv"
-
+generate_movies = False
 
 def validation(project_dir, model_name):
     results = kpms.load_results(project_dir, model_name)
@@ -36,15 +40,15 @@ def validation(project_dir, model_name):
         all_syllables_rearing.extend(syllables_rearing)
         all_syllables_non_rearing.extend(syllables_non_rearing)
 
-        video_path = get_video_path(recording_name, video_dirs)
-        if video_path is not None:
-            generate_syllable_rearing_movies(
-                syllable, rearing, video_path, recording_name, project_dir, model_name
-            )
+        if generate_movies:
+            video_path = get_video_path(recording_name, video_dirs)
+            if video_path is not None:
+                generate_syllable_rearing_movies(
+                    syllable, rearing, video_path, recording_name, project_dir, model_name
+                )
 
-    analyze_overall_syllable_patterns(all_syllables_rearing, all_syllables_non_rearing)
-
-
+    analyze_syllable_patterns(all_syllables_rearing, all_syllables_non_rearing)
+    
 def get_video_path(recording_name, video_dirs):
     for video_dir in video_dirs:
         for file in os.listdir(video_dir):
@@ -86,38 +90,58 @@ def get_syllables_by_rearing(syllable, rearing):
     return syllables_rearing, syllables_non_rearing
 
 
-def analyze_overall_syllable_patterns(syllables_rearing, syllables_non_rearing):
+def analyze_syllable_patterns(syllables_rearing, syllables_non_rearing):
     if not syllables_rearing:
         print("Nenhum evento de rearing encontrado")
         return
 
-    unique_rearing, counts_rearing = np.unique(syllables_rearing, return_counts=True)
-    sorted_rearing_idx = np.argsort(counts_rearing)[::-1]
-    top_rearing_syllables = unique_rearing[sorted_rearing_idx]
-    top_rearing_counts = counts_rearing[sorted_rearing_idx]
-
-    unique_non_rearing, counts_non_rearing = np.unique(syllables_non_rearing, return_counts=True)
-    sorted_non_rearing_idx = np.argsort(counts_non_rearing)[::-1]
-    top_non_rearing_syllables = unique_non_rearing[sorted_non_rearing_idx]
-    top_non_rearing_counts = counts_non_rearing[sorted_non_rearing_idx]
-
-    print(f"\n=== ANÁLISE GERAL DE SÍLABAS ===")
+    print_legal(f"ANÁLISE PREDITIVA DE SÍLABAS")
     print(f"Total de frames com rearing: {len(syllables_rearing)}")
     print(f"Total de frames sem rearing: {len(syllables_non_rearing)}")
-
-    print(f"\nTop sílabas DURANTE rearing:")
-    for i in range(len(top_rearing_syllables)):
-        syl = top_rearing_syllables[i]
-        count = top_rearing_counts[i]
-        pct = (count / len(syllables_rearing)) * 100
-        print(f"  {i+1}. Sílaba {syl}: {count} vezes ({pct:.1f}%)")
-
-    print(f"\nTop sílabas SEM rearing:")
-    for i in range(len(top_non_rearing_syllables)):
-        syl = top_non_rearing_syllables[i]
-        count = top_non_rearing_counts[i]
-        pct = (count / len(syllables_non_rearing)) * 100
-        print(f"  {i+1}. Sílaba {syl}: {count} vezes ({pct:.1f}%)")
+    
+    y_true = np.concatenate([np.ones(len(syllables_rearing)), np.zeros(len(syllables_non_rearing))])
+    all_syllables = syllables_rearing + syllables_non_rearing
+    
+    syllable_counts = Counter(all_syllables)
+    frequent_syllables = [syl for syl, count in syllable_counts.items() if count >= 10]
+    
+    syllable_metrics = {}
+    
+    for syllable in frequent_syllables:
+        y_pred = np.array([1 if syl == syllable else 0 for syl in all_syllables])
+        
+        precision = precision_score(y_true, y_pred, zero_division=0)
+        recall = recall_score(y_true, y_pred, zero_division=0)
+        f1 = f1_score(y_true, y_pred, zero_division=0)
+        accuracy = accuracy_score(y_true, y_pred)
+        
+        tn, fp, fn, tp = confusion_matrix(y_true, y_pred).ravel()
+        
+        syllable_metrics[syllable] = {
+            'tp': tp, 'tn': tn, 'fp': fp, 'fn': fn,
+            'precision': precision, 'recall': recall, 'f1_score': f1,
+            'accuracy': accuracy, 'total_occurrences': tp + fp
+        }
+    
+    sorted_syllables = sorted(syllable_metrics.items(), 
+                            key=lambda x: x[1]['f1_score'], reverse=True)
+    
+    print(f"\nTop sílabas preditivas de rearing (ordenadas por F1-score):")
+    print("Sílaba | TP | TN | FP | FN | Precision | Recall | F1-score | Accuracy | Total")
+    print("-" * 85)
+    
+    for i, (syllable, metrics) in enumerate(sorted_syllables[:15]):
+        print(f"{syllable:6d} | {metrics['tp']:2d} | {metrics['tn']:4d} | {metrics['fp']:2d} | {metrics['fn']:2d} | "
+              f"{metrics['precision']:8.3f} | {metrics['recall']:6.3f} | {metrics['f1_score']:8.3f} | "
+              f"{metrics['accuracy']:8.3f} | {metrics['total_occurrences']:5d}")
+    
+    if sorted_syllables:
+        best_syllable = sorted_syllables[0]
+        print(f"\nMelhor sílaba preditiva: {best_syllable[0]}")
+        print(f"- F1-score: {best_syllable[1]['f1_score']:.3f}")
+        print(f"- Precision: {best_syllable[1]['precision']:.3f}")
+        print(f"- Recall: {best_syllable[1]['recall']:.3f}")
+        print(f"- Accuracy: {best_syllable[1]['accuracy']:.3f}")
 
 
 def generate_syllable_rearing_movies(
