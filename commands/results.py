@@ -15,11 +15,13 @@ def results(
         config.update(config_overrides)
 
 
-    kpms.reindex_syllables_in_checkpoint(project_dir, model_name);
-
     if load_results:
         results = kpms.load_results(project_dir, model_name)
     else:
+        prevent_overwrite_error(project_dir, model_name, coordinates.keys())
+
+        kpms.reindex_syllables_in_checkpoint(project_dir, model_name);
+
         model, _, metadata, _ = kpms.load_checkpoint(
             project_dir,
             model_name,
