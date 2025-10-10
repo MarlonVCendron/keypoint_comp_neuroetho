@@ -17,7 +17,13 @@ def prevent_overwrite_error(project_dir, model_name, recording_names):
 
 def create_backup_results(results_path):
     if os.path.exists(results_path):
-        os.rename(results_path, results_path + ".old")
+        backup_path = results_path + ".old"
+        counter = 1
+        while os.path.exists(backup_path):
+            backup_path = f"{results_path}.old{counter}"
+            counter += 1
+        with open(results_path, 'rb') as src, open(backup_path, 'wb') as dst:
+            dst.write(src.read())
 
 def ask_to_overwrite(recording_name, results_path):
     answer = input(f"{recording_name} já existe em {results_path}. Deseja sobrescrever? (y/n)")
