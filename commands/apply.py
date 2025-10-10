@@ -10,20 +10,11 @@ from utils.overwrite_results import prevent_overwrite_error
 def apply(project_dir, model_name):
     model = kpms.load_checkpoint(project_dir, model_name)[0]
 
-    new_data = [
-        "./projects/elm_ms/data/vids/T",
-        # './projects/elm_ms/data/vids/G0',
-        # './projects/elm_ms/data/vids/G39',
-        # './projects/elm_ms/data/vids/G41',
-        # './projects/elm_ms/data/vids/G42',
-        # './projects/elm_ms/data/vids/G43',
-        # './projects/elm_ms/data/vids/G45',
-        # './projects/elm_ms/data/vids/G64',
-        # './projects/elm_ms/data/vids/G65',
-        # './projects/elm_ms/data/vids/G66',
-        # './projects/elm_ms/data/vids/G67',
-        # './projects/elm_ms/data/vids/G68',
-    ]
+    # # Teste
+    # new_data = ["./projects/elm_ms/data/vids/T"]
+
+    # Sample
+    new_data = ['./projects/elm_ms/data/vids/S1', './projects/elm_ms/data/vids/S2']
 
     data, metadata, config, coordinates, video_frame_indexes, _ = load_data_and_config(
         project_dir, video_dir=new_data
