@@ -167,9 +167,14 @@ def build_parser():
         help="Valida o modelo.",
     )
 
-    parser_results = subparsers.add_parser(
+    parser_apply = subparsers.add_parser(
         "apply",
         help="Aplica o modelo a novos dados.",
+    )
+
+    parser_stats = subparsers.add_parser(
+        "stats",
+        help="Estatísticas do modelo.",
     )
 
     return parser

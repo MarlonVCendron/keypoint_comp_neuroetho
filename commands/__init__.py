@@ -9,3 +9,4 @@ from commands.results import results
 from commands.outliers import outliers
 from commands.validation import validation
 from commands.apply import apply
+from commands.stats import stats
