@@ -171,8 +171,11 @@ conf_pseudocount: 0.001
 
 # directory with videos from which keypoints were derived (used for crowd movies)
 video_dir:
-- projects/elm_ms/data/vids/G68_clean
-- projects/elm_ms/data/vids/G39
+- projects/elm_ms/data/vids/T
+- projects/elm_ms/data/vids/S1
+- projects/elm_ms/data/vids/S2
+# - projects/elm_ms/data/vids/G68_clean
+# - projects/elm_ms/data/vids/G39
 
 # colormap used for visualization; see `matplotlib.cm.get_cmap` for options
 keypoint_colormap: autumn
